@@ -3,476 +3,1005 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seekmed — Rastreamento de Pedidos</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Seekmed · Backoffice</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f4f6f9;
-    --surface: #ffffff;
-    --border: #e2e7ef;
-    --text: #1a2236;
-    --text2: #5a6b85;
-    --accent: #0057b7;
-    --accent-light: #e8f0fb;
-    --accent2: #00a3a3;
-    --radius: 14px;
-    --shadow: 0 2px 12px rgba(26,34,54,0.07);
-    --shadow-lg: 0 8px 40px rgba(26,34,54,0.13);
-  }
+:root {
+  --bg:#0f1623;--bg2:#161e2e;--surface:#1c2740;--surface2:#22304a;
+  --border:#2a3a58;--border2:#344766;--text:#e8edf5;--text2:#8a9bbf;--text3:#5a6b85;
+  --accent:#2d7ff9;--accent-glow:rgba(45,127,249,.15);
+  --success:#00c07f;--success-dim:rgba(0,192,127,.12);
+  --warning:#f5a623;--warning-dim:rgba(245,166,35,.12);
+  --danger:#f04452;--danger-dim:rgba(240,68,82,.12);
+  --edit:#a855f7;--edit-dim:rgba(168,85,247,.12);
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:0 20px 24px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo-mark svg{width:16px;height:16px;}
+.logo-name{font-size:16px;font-weight:700;letter-spacing:-.3px;}
+.logo-name span{color:var(--accent);}
+.sidebar-section{padding:0 12px;margin-bottom:4px;}
+.sidebar-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:8px 8px 6px;}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);color:var(--text2);font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;}
+.sidebar-link svg{width:15px;height:15px;flex-shrink:0;}
+.sidebar-link:hover{background:var(--surface);color:var(--text);}
+.sidebar-link.active{background:var(--accent-glow);color:var(--accent);}
+.sidebar-footer{margin-top:auto;padding:16px 20px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text3);}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-title{font-size:15px;font-weight:600;}
+.topbar-sub{font-size:12px;color:var(--text2);margin-top:1px;}
+.topbar-actions{display:flex;align-items:center;gap:8px;}
+.content{padding:28px 32px;max-width:1240px;}
 
-  /* ── HEADER ── */
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 40px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 1px 0 var(--border);
-  }
+/* EDIT MODE BANNER */
+.edit-banner{background:linear-gradient(135deg,var(--edit-dim),rgba(168,85,247,.06));border:1px solid rgba(168,85,247,.3);border-radius:var(--radius);padding:12px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.edit-banner svg{width:16px;height:16px;color:var(--edit);flex-shrink:0;}
+.edit-banner-text{flex:1;font-size:13px;}
+.edit-banner-text strong{color:var(--edit);}
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-  }
+/* GRID */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:900px){.form-grid{grid-template-columns:1fr}.sidebar{display:none}.main{margin-left:0}}
 
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: var(--accent);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;}
+.card:last-child{margin-bottom:0;}
+.card-head{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-head-left{display:flex;align-items:center;gap:10px;}
+.card-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.card-icon.blue{background:var(--accent-glow);color:var(--accent);}
+.card-icon.green{background:var(--success-dim);color:var(--success);}
+.card-icon.orange{background:var(--warning-dim);color:var(--warning);}
+.card-icon.purple{background:var(--edit-dim);color:var(--edit);}
+.card-icon svg{width:14px;height:14px;}
+.card-title{font-size:13px;font-weight:600;}
+.card-body{padding:16px 18px;}
 
-  .logo-icon svg { width: 20px; height: 20px; }
+/* FORM */
+.field{margin-bottom:13px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text2);margin-bottom:5px;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-family:inherit;font-size:13.5px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+.field input::placeholder,.field textarea::placeholder{color:var(--text3);}
+.field select option{background:var(--surface);}
+.field textarea{resize:vertical;min-height:76px;}
+.field-row{display:flex;gap:10px;}
+.field-row .field{flex:1;margin-bottom:0;}
+.field-hint{font-size:11px;color:var(--text3);margin-top:4px;}
 
-  .logo-text {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-    color: var(--text);
-  }
+/* PRODUTOS TABLE */
+.produtos-table{width:100%;border-collapse:collapse;}
+.produtos-table th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);padding:0 8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.produto-row td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.produto-row td input{background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:5px 9px;font-family:inherit;font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .15s;}
+.produto-row td input:focus{border-color:var(--accent);}
+.produto-row td input::placeholder{color:var(--text3);}
+.td-qty{width:110px;}.td-pct{width:80px;}.td-del{width:34px;}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;border-radius:4px;display:flex;align-items:center;transition:color .15s;}
+.del-btn:hover{color:var(--danger);}
+.del-btn svg{width:14px;height:14px;}
+.add-row-btn{display:flex;align-items:center;gap:8px;background:none;border:1.5px dashed var(--border);border-radius:var(--radius-sm);color:var(--text3);font-family:inherit;font-size:13px;padding:8px 14px;cursor:pointer;width:100%;margin-top:10px;transition:border-color .15s,color .15s;}
+.add-row-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  .logo-text span { color: var(--accent); }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;}
+.btn svg{width:14px;height:14px;flex-shrink:0;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:#1a6de8;}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.btn-secondary:hover{color:var(--text);border-color:var(--border2);}
+.btn-publish{background:linear-gradient(135deg,#238636,#2ea043);color:#fff;font-weight:600;}
+.btn-publish:hover{background:linear-gradient(135deg,#2ea043,#3fb950);}
+.btn-publish:disabled,.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-edit{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-weight:600;}
+.btn-edit:hover{background:linear-gradient(135deg,#6d28d9,#9333ea);}
+.btn-sm{padding:6px 12px;font-size:12.5px;}
+.btn-xs{padding:4px 9px;font-size:12px;}
 
-  /* ── MAIN ── */
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 24px 80px;
-  }
+/* GH BANNER */
+.gh-banner{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.gh-banner.configured{border-color:rgba(0,192,127,.3);background:rgba(0,192,127,.05);}
+.gh-banner-icon{width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.gh-banner-icon svg{width:17px;height:17px;}
+.gh-banner-text{flex:1;}
+.gh-banner-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+.gh-banner-sub{font-size:12px;color:var(--text2);}
+.gh-repo-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--accent);}
 
-  /* Decorative background blob */
-  .bg-blob {
-    position: fixed;
-    top: -120px; right: -100px;
-    width: 500px; height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #dce8fb 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-  .bg-blob2 {
-    position: fixed;
-    bottom: -80px; left: -80px;
-    width: 380px; height: 380px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #d4f5f5 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
+/* PEDIDOS LIST */
+.pedidos-list{display:flex;flex-direction:column;gap:8px;}
+.pedido-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 16px;transition:border-color .15s;}
+.pedido-item:hover{border-color:var(--border2);}
+.pedido-item-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.pedido-num{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--accent);}
+.pedido-client{font-size:13px;font-weight:500;}
+.pedido-meta{font-size:11px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.pedido-url{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);}
+.pedido-status{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
+.status-prep{background:var(--warning-dim);color:var(--warning);}
+.status-pronto{background:var(--success-dim);color:var(--success);}
+.status-transit{background:var(--accent-glow);color:var(--accent);}
+.status-entregue{background:rgba(255,255,255,.05);color:var(--text2);}
+.pedido-actions{display:flex;gap:6px;flex-shrink:0;}
 
-  .hero {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    max-width: 520px;
-    width: 100%;
-  }
+/* MODAL CONFIG */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:500;padding:20px;}
+.modal-overlay.hidden{display:none;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);width:100%;max-width:480px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:14px;font-weight:600;}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--text2);padding:4px;border-radius:6px;display:flex;}
+.modal-close:hover{color:var(--text);}
+.modal-close svg{width:16px;height:16px;}
+.modal-body{padding:20px;}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
 
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin-bottom: 24px;
-  }
+/* TOKEN */
+.token-wrap{position:relative;}
+.token-wrap input{padding-right:38px;}
+.token-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);display:flex;align-items:center;}
+.token-eye svg{width:15px;height:15px;}
 
-  .hero-badge svg { width: 13px; height: 13px; }
+/* PREVIEW */
+.preview-topbar{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:8px;}
+.preview-dots{display:flex;gap:5px;}
+.preview-dot{width:10px;height:10px;border-radius:50%;}
+.preview-dot.r{background:#f04452;}.preview-dot.y{background:#f5a623;}.preview-dot.g{background:#00c07f;}
+.preview-iframe{width:100%;height:460px;border:none;background:#f4f6f9;}
 
-  h1 {
-    font-size: clamp(28px, 5vw, 42px);
-    font-weight: 600;
-    letter-spacing: -1px;
-    color: var(--text);
-    line-height: 1.15;
-    margin-bottom: 12px;
-  }
+/* PUBLISH LOG */
+.publish-log{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);min-height:56px;display:none;margin-top:14px;max-height:130px;overflow-y:auto;}
+.publish-log.visible{display:block;}
+.log-line{padding:2px 0;display:flex;gap:8px;}
+.log-line.ok{color:var(--success);}.log-line.err{color:var(--danger);}.log-line.info{color:var(--accent);}
 
-  h1 span { color: var(--accent); }
+/* SPINNER */
+.spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  .hero-sub {
-    font-size: 16px;
-    color: var(--text2);
-    line-height: 1.6;
-    margin-bottom: 40px;
-  }
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;padding:12px 20px;border-radius:var(--radius);font-size:13.5px;font-weight:500;display:none;align-items:center;gap:10px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.3);}
+.toast.success{background:var(--success);color:#fff;}
+.toast.error{background:var(--danger);color:#fff;}
+.toast.info{background:var(--accent);color:#fff;}
+.toast svg{width:15px;height:15px;flex-shrink:0;}
 
-  /* ── SEARCH CARD ── */
-  .search-card {
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-lg);
-    padding: 36px;
-    width: 100%;
-  }
-
-  .search-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--text2);
-    margin-bottom: 10px;
-    display: block;
-  }
-
-  .search-row {
-    display: flex;
-    gap: 12px;
-    align-items: stretch;
-  }
-
-  .search-input-wrap {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .search-input-wrap svg {
-    position: absolute;
-    left: 16px;
-    width: 18px; height: 18px;
-    color: var(--text2);
-    pointer-events: none;
-    flex-shrink: 0;
-  }
-
-  #orderInput {
-    width: 100%;
-    height: 54px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 0 16px 0 46px;
-    font-family: 'DM Mono', monospace;
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--text);
-    background: var(--bg);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    letter-spacing: 1px;
-  }
-
-  #orderInput:focus {
-    border-color: var(--accent);
-    background: #fff;
-    box-shadow: 0 0 0 4px var(--accent-light);
-  }
-
-  #orderInput::placeholder {
-    color: #b0bac8;
-    letter-spacing: 0;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-  }
-
-  .search-btn {
-    height: 54px;
-    padding: 0 28px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-    box-shadow: 0 4px 14px rgba(0,87,183,0.25);
-  }
-
-  .search-btn:hover {
-    background: #0049a0;
-    box-shadow: 0 6px 20px rgba(0,87,183,0.35);
-    transform: translateY(-1px);
-  }
-
-  .search-btn:active { transform: translateY(0); }
-
-  .search-btn svg { width: 16px; height: 16px; }
-
-  /* Error */
-  .error-msg {
-    display: none;
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: #fef3f2;
-    border: 1px solid #fbd5d1;
-    border-radius: 10px;
-    font-size: 13px;
-    color: #c0392b;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .error-msg.show { display: flex; }
-  .error-msg svg { width: 15px; height: 15px; flex-shrink: 0; }
-
-  /* ── HINT ── */
-  .search-hint {
-    margin-top: 14px;
-    font-size: 13px;
-    color: var(--text2);
-    text-align: left;
-  }
-
-  .search-hint strong { color: var(--text); }
-
-  /* ── FEATURES ── */
-  .features {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 48px;
-    width: 100%;
-    max-width: 520px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .feature {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-shadow: var(--shadow);
-  }
-
-  .feature-icon {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .feature-icon.blue { background: var(--accent-light); color: var(--accent); }
-  .feature-icon.teal { background: #e0f7f7; color: var(--accent2); }
-  .feature-icon.green { background: #e3f5ee; color: #00875a; }
-
-  .feature-icon svg { width: 16px; height: 16px; }
-
-  .feature-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .feature-desc {
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.5;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 24px;
-    font-size: 12px;
-    color: var(--text2);
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 600px) {
-    header { padding: 0 20px; }
-    .search-card { padding: 24px 20px; }
-    .search-row { flex-direction: column; }
-    .search-btn { width: 100%; justify-content: center; }
-    .features { grid-template-columns: 1fr; gap: 12px; }
-    h1 { font-size: 26px; }
-  }
+.sep{height:1px;background:var(--border);margin:14px 0;}
+code{font-family:'DM Mono',monospace;font-size:11.5px;}
 </style>
 </head>
 <body>
+<div class="layout">
 
-<div class="bg-blob"></div>
-<div class="bg-blob2"></div>
-
-<!-- HEADER -->
-<header>
-  <a class="logo" href="#">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-      </svg>
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </div>
-    <span class="logo-text">Seek<span>med</span></span>
-  </a>
-</header>
+    <div class="logo-name">Seek<span>med</span></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Backoffice</div>
+    <button class="sidebar-link active" id="sideNovo" onclick="goTab('novo',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Novo Pedido
+    </button>
+    <button class="sidebar-link" id="sidePedidos" onclick="goTab('pedidos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Pedidos <span id="sideCount" style="margin-left:auto;background:var(--accent-glow);color:var(--accent);font-size:11px;padding:1px 7px;border-radius:10px;display:none;">0</span>
+    </button>
+    <button class="sidebar-link" id="sideConfig" onclick="goTab('config',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+      Config. GitHub
+    </button>
+  </div>
+  <div class="sidebar-footer">configseek · v3.0<br>Seekmed © 2026</div>
+</nav>
 
-<!-- MAIN -->
-<main>
-  <div class="hero">
-
-    <div class="hero-badge">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      Rastreamento de Pedidos
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="topbar-title" id="topbarTitle">Novo Pedido</div>
+        <div class="topbar-sub" id="topbarSub">Preencha e publique direto no GitHub Pages</div>
+      </div>
     </div>
+    <div class="topbar-actions" id="topbarActions">
+      <button class="btn btn-secondary btn-sm" onclick="clearForm()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg>
+        Limpar
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="downloadHtml()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Baixar HTML
+      </button>
+      <button class="btn btn-publish btn-sm" id="btnPublish" onclick="publishToGitHub()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        Publicar no GitHub
+      </button>
+    </div>
+  </div>
 
-    <h1>Acompanhe seu<br><span>pedido</span> em tempo real</h1>
-    <p class="hero-sub">Insira o número do pedido para visualizar o status, produtos e informações de entrega.</p>
+  <div class="content">
 
-    <div class="search-card">
-      <span class="search-label">Número do Pedido</span>
-      <div class="search-row">
-        <div class="search-input-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
-            <rect x="9" y="3" width="6" height="4" rx="2"/>
-          </svg>
-          <input
-            type="text"
-            id="orderInput"
-            placeholder="Ex: 1200"
-            inputmode="numeric"
-            maxlength="10"
-            onkeydown="handleKey(event)"
-            oninput="clearError()"
-            autofocus
-          >
+    <!-- ══ TAB: NOVO / EDITAR ══ -->
+    <div id="tabNovo">
+
+      <!-- EDIT MODE BANNER -->
+      <div class="edit-banner" id="editBanner" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <div class="edit-banner-text">
+          Modo edição: <strong id="editBannerLabel">Pedido #—</strong>
+          — Altere os dados e clique em <strong>Publicar no GitHub</strong> para atualizar o arquivo no repositório.
         </div>
-        <button class="search-btn" onclick="buscarPedido()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          Buscar
-        </button>
+        <button class="btn btn-secondary btn-sm" onclick="clearForm()">Cancelar edição</button>
       </div>
 
-      <div class="error-msg" id="errorMsg">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        Por favor, insira um número de pedido válido.
+      <!-- GH BANNER -->
+      <div class="gh-banner" id="ghBanner">
+        <div class="gh-banner-icon"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--text2)"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></div>
+        <div class="gh-banner-text">
+          <div class="gh-banner-title" id="ghBannerTitle">GitHub não configurado</div>
+          <div class="gh-banner-sub" id="ghBannerSub">Configure seu token e repositório para publicar diretamente.</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="goTab('config',document.getElementById('sideConfig'))">Configurar</button>
       </div>
 
-      <p class="search-hint">Digite apenas o número. Ex: <strong>2310</strong></p>
+      <div class="form-grid">
+        <!-- ── COL ESQUERDA ── -->
+        <div>
+          <div class="card">
+            <div class="card-head"><div class="card-head-left"><div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div><span class="card-title">Dados do Pedido</span></div></div>
+            <div class="card-body">
+              <div class="field-row">
+                <div class="field"><label>Nº Pedido Interno</label><input type="text" id="fNum" placeholder="Ex: 1380" oninput="onFormChange()"></div>
+                <div class="field"><label>PO do Cliente</label><input type="text" id="fPO" placeholder="Ex: ISCPPO00043591" oninput="onFormChange()"></div>
+              </div>
+              <div class="field"><label>Cliente / CNPJ</label><input type="text" id="fCliente" placeholder="Ex: Hospital São Lucas / 62.596.408/0001-00" oninput="onFormChange()"></div>
+              <div class="field-row">
+                <div class="field"><label>Data do Pedido</label><input type="text" id="fDataPed" placeholder="DD/MM/AAAA" oninput="onFormChange()"></div>
+                <div class="field"><label>Prazo de Entrega</label><input type="text" id="fDataEnt" placeholder="DD/MM/AAAA" oninput="onFormChange()"></div>
+              </div>
+              <div class="field"><label>Status Atual</label>
+                <select id="fStatus" onchange="onFormChange()">
+                  <option value="1">1 — Pedido Recebido</option>
+                  <option value="2" selected>2 — Em Preparação</option>
+                  <option value="3">3 — Pronto para Envio</option>
+                  <option value="4">4 — Em Trânsito</option>
+                  <option value="5">5 — Entregue</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-head-left"><div class="card-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="card-title">Obs. Nota Fiscal</span></div></div>
+            <div class="card-body">
+              <div class="field"><label>Texto pré-fixado (visível ao cliente)</label><textarea id="fNfPre" rows="4" placeholder="Produtos de uso médico-hospitalar. CFOP 6102..." oninput="onFormChange()"></textarea></div>
+              <div class="field"><label>Webhook Make.com</label><input type="text" id="fWebhook" value="https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg" oninput="onFormChange()"><div class="field-hint">Recebe as obs. do cliente via POST.</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-head-left"><div class="card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="card-title">Transporte</span></div></div>
+            <div class="card-body">
+              <div class="field"><label>Transportadora</label><input type="text" id="fTransNome" placeholder="Ex: Transportadora Rápida Ltda." oninput="onFormChange()"></div>
+              <div class="field-row">
+                <div class="field"><label>Volumes</label><input type="number" id="fTransVol" placeholder="4" min="0" oninput="onFormChange()"></div>
+                <div class="field"><label>Progresso (%)</label><input type="number" id="fTransPct" value="0" min="0" max="100" oninput="onFormChange()"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── COL DIREITA ── -->
+        <div>
+          <div class="card">
+            <div class="card-head"><div class="card-head-left"><div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><span class="card-title">Produtos</span></div></div>
+            <div class="card-body" style="padding:14px 16px;">
+              <table class="produtos-table">
+                <thead><tr><th>Nome / Descrição</th><th class="td-qty">Quantidade</th><th class="td-pct">Barra %</th><th class="td-del"></th></tr></thead>
+                <tbody id="produtosBody"></tbody>
+              </table>
+              <button class="add-row-btn" onclick="addRow()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Adicionar produto
+              </button>
+            </div>
+          </div>
+
+          <!-- PUBLICAR -->
+          <div class="card">
+            <div class="card-head"><div class="card-head-left"><div class="card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><span class="card-title">Publicar</span></div></div>
+            <div class="card-body">
+              <div class="field">
+                <label>Pasta no repositório</label>
+                <input type="text" id="fPasta" value="pedidos" oninput="updatePathPreview()">
+                <div class="field-hint">Arquivo: <code id="pathPreview" style="color:var(--accent)">pedidos/1380/index.html</code></div>
+              </div>
+              <div class="sep"></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-publish" id="btnPublish" onclick="publishToGitHub()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  <span id="btnPublishLabel">Publicar no GitHub</span>
+                </button>
+                <button class="btn btn-secondary" onclick="downloadHtml()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Só baixar
+                </button>
+              </div>
+              <div class="publish-log" id="publishLog"></div>
+            </div>
+          </div>
+
+          <!-- PREVIEW -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-left"><div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><span class="card-title">Pré-visualização</span></div>
+              <button class="btn btn-secondary btn-sm" onclick="refreshPreview()">Atualizar</button>
+            </div>
+            <div style="border-top:1px solid var(--border);">
+              <div class="preview-topbar">
+                <div class="preview-dots"><div class="preview-dot r"></div><div class="preview-dot y"></div><div class="preview-dot g"></div></div>
+                <span id="previewUrl" style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;">seekmedmedical.github.io/painel-pedido/pedidos/…</span>
+              </div>
+              <iframe id="previewFrame" class="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-  </div>
+    <!-- ══ TAB: PEDIDOS ══ -->
+    <div id="tabPedidos" style="display:none;">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left"><div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="card-title">Pedidos Publicados</span></div>
+          <span style="font-size:12px;color:var(--text3);">Histórico neste navegador</span>
+        </div>
+        <div class="card-body">
+          <div class="pedidos-list" id="pedidosList"></div>
+        </div>
+      </div>
+    </div>
 
-  <!-- FEATURES -->
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon blue">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
+    <!-- ══ TAB: CONFIG ══ -->
+    <div id="tabConfig" style="display:none;">
+      <div style="max-width:540px;">
+        <div class="card">
+          <div class="card-head"><div class="card-head-left"><div class="card-icon blue"><svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></div><span class="card-title">Configurações GitHub</span></div></div>
+          <div class="card-body">
+            <div class="field"><label>Usuário / Organização</label><input type="text" id="cfgOwner" placeholder="Ex: seekmedmedical"><div class="field-hint">Nome exato da conta ou organização no GitHub.</div></div>
+            <div class="field"><label>Repositório</label><input type="text" id="cfgRepo" placeholder="Ex: painel-pedido"></div>
+            <div class="field"><label>Branch</label><input type="text" id="cfgBranch" placeholder="main" value="main"></div>
+            <div class="field">
+              <label>Personal Access Token (PAT)</label>
+              <div class="token-wrap">
+                <input type="password" id="cfgToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                <button class="token-eye" onclick="document.getElementById('cfgToken').type=document.getElementById('cfgToken').type==='password'?'text':'password'">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div class="field-hint">Crie em: <a href="https://github.com/settings/tokens/new?scopes=repo&description=Seekmed+Backoffice" target="_blank" style="color:var(--accent)">github.com/settings/tokens</a> · marque <strong>repo</strong>. Salvo apenas neste navegador.</div>
+            </div>
+            <div class="sep"></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary" onclick="saveConfig()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar
+              </button>
+              <button class="btn btn-secondary" onclick="testConnection()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Testar Conexão
+              </button>
+            </div>
+            <div id="testResult" style="margin-top:12px;font-size:13px;display:none;padding:10px 14px;border-radius:8px;"></div>
+          </div>
+        </div>
       </div>
-      <div class="feature-title">Status em tempo real</div>
-      <div class="feature-desc">Acompanhe cada etapa do preparo ao envio.</div>
     </div>
-    <div class="feature">
-      <div class="feature-icon teal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <rect x="1" y="3" width="15" height="13" rx="2"/>
-          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-          <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-        </svg>
-      </div>
-      <div class="feature-title">Logística detalhada</div>
-      <div class="feature-desc">Transportadora, volumes e progresso da entrega.</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon green">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-      </div>
-      <div class="feature-title">Notas fiscais</div>
-      <div class="feature-desc">Informações de NF e observações do pedido.</div>
-    </div>
-  </div>
-</main>
 
-<footer>
-  © 2025 Seekmed Medical — Todos os direitos reservados
-</footer>
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
 
 <script>
-  function buscarPedido() {
-    const input = document.getElementById('orderInput');
-    const val = input.value.trim().replace(/\D/g, '');
+// ══════════════════════════════════════════════
+//  STATE — edição
+// ══════════════════════════════════════════════
+let editingId = null; // id do pedido sendo editado (null = novo)
 
-    if (!val) {
-      document.getElementById('errorMsg').classList.add('show');
-      input.focus();
-      return;
-    }
-
-    // Redireciona para a pasta do pedido
-    window.location.href = val + '/';
+// ══════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════
+const cfgKeys = { owner:'sk_gh_owner', repo:'sk_gh_repo', branch:'sk_gh_branch', token:'sk_gh_token' };
+function loadConfig() {
+  return Object.fromEntries(Object.entries(cfgKeys).map(([k,v]) => [k, localStorage.getItem(v)||'']));
+}
+function saveConfig() {
+  ['Owner','Repo','Branch','Token'].forEach(k => {
+    const v = document.getElementById('cfg'+k).value.trim();
+    localStorage.setItem(cfgKeys[k.toLowerCase()], v || (k==='Branch'?'main':v));
+  });
+  updateGhBanner();
+  showToast('Configurações salvas!', 'success');
+}
+function fillConfigForm() {
+  const cfg = loadConfig();
+  document.getElementById('cfgOwner').value  = cfg.owner;
+  document.getElementById('cfgRepo').value   = cfg.repo;
+  document.getElementById('cfgBranch').value = cfg.branch || 'main';
+  document.getElementById('cfgToken').value  = cfg.token;
+}
+function updateGhBanner() {
+  const cfg = loadConfig();
+  const ok  = cfg.owner && cfg.repo && cfg.token;
+  const b   = document.getElementById('ghBanner');
+  b.className = 'gh-banner' + (ok ? ' configured' : '');
+  document.getElementById('ghBannerTitle').textContent = ok ? '✓ GitHub configurado' : 'GitHub não configurado';
+  document.getElementById('ghBannerSub').innerHTML = ok
+    ? `Repositório: <span class="gh-repo-badge">${cfg.owner}/${cfg.repo}</span> · branch <span class="gh-repo-badge">${cfg.branch||'main'}</span>`
+    : 'Configure seu token e repositório para publicar diretamente.';
+}
+async function testConnection() {
+  const cfg = loadConfig();
+  const el = document.getElementById('testResult');
+  el.style.display='block'; el.style.background='var(--surface2)'; el.style.color='var(--text2)';
+  el.textContent='⏳ Testando…';
+  try {
+    const r = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}`,
+      { headers:{ Authorization:`token ${cfg.token}`, Accept:'application/vnd.github.v3+json' } });
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    el.style.background='var(--success-dim)'; el.style.color='var(--success)';
+    el.textContent=`✓ Conectado! ${d.full_name} · ${d.visibility}`;
+  } catch(e) {
+    el.style.background='var(--danger-dim)'; el.style.color='var(--danger)';
+    el.textContent=`✗ Erro: verifique o token e repositório. (${e.message})`;
   }
+}
 
-  function handleKey(e) {
-    if (e.key === 'Enter') buscarPedido();
-  }
+// ══════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════
+function goTab(tab, btn) {
+  ['tabNovo','tabPedidos','tabConfig'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById('tab'+tab[0].toUpperCase()+tab.slice(1)).style.display='';
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const map = { novo:'Novo Pedido', pedidos:'Pedidos Publicados', config:'Config. GitHub' };
+  document.getElementById('topbarTitle').textContent = map[tab];
+  document.getElementById('topbarActions').style.display = tab==='novo' ? '' : 'none';
+  if (tab==='pedidos') renderSavedOrders();
+  if (tab==='config')  fillConfigForm();
+}
 
-  function clearError() {
-    document.getElementById('errorMsg').classList.remove('show');
+// ══════════════════════════════════════════════
+//  PRODUTOS
+// ══════════════════════════════════════════════
+let rowId = 0;
+function addRow(name='', desc='', qty='', pct=100) {
+  const id = ++rowId;
+  const tr = document.createElement('tr');
+  tr.className = 'produto-row'; tr.dataset.id = id;
+  tr.innerHTML = `
+    <td>
+      <input type="text" placeholder="Nome do produto" value="${x(name)}" style="margin-bottom:4px;" oninput="onFormChange()">
+      <input type="text" placeholder="Descrição / lote / obs" value="${x(desc)}" style="font-size:12px;" oninput="onFormChange()">
+    </td>
+    <td class="td-qty"><input type="text" placeholder="Qt 10 / 80%" value="${x(qty)}" oninput="onFormChange()"></td>
+    <td class="td-pct"><input type="number" min="0" max="100" value="${pct}" oninput="onFormChange()"></td>
+    <td class="td-del">
+      <button class="del-btn" onclick="this.closest('tr').remove();onFormChange()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </td>`;
+  document.getElementById('produtosBody').appendChild(tr);
+  onFormChange();
+}
+function x(s) { return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function getProdutos() {
+  return Array.from(document.querySelectorAll('.produto-row')).map(r => {
+    const i = r.querySelectorAll('input');
+    return { name:i[0].value.trim(), desc:i[1].value.trim(), qty:i[2].value.trim(), pct:parseInt(i[3].value)||0 };
+  }).filter(p => p.name);
+}
+
+// ══════════════════════════════════════════════
+//  FORM HELPERS
+// ══════════════════════════════════════════════
+function gv(id) { return document.getElementById(id).value.trim(); }
+function sv(id, v) { document.getElementById(id).value = v||''; }
+
+function onFormChange() {
+  updatePathPreview();
+  clearTimeout(window._pt);
+  window._pt = setTimeout(refreshPreview, 700);
+}
+function updatePathPreview() {
+  const pasta = gv('fPasta') || 'pedidos';
+  const num   = gv('fNum') || '0000';
+  const path  = `${pasta}/${num}/index.html`;
+  document.getElementById('pathPreview').textContent = path;
+  const cfg = loadConfig();
+  document.getElementById('previewUrl').textContent =
+    `${cfg.owner||'owner'}.github.io/${cfg.repo||'repo'}/${path}`;
+  // Update publish button label
+  const lbl = document.getElementById('btnPublishLabel');
+  if (lbl) lbl.textContent = editingId ? `Atualizar Pedido #${num}` : 'Publicar no GitHub';
+}
+
+// ══════════════════════════════════════════════
+//  LOAD ORDER INTO FORM (EDIT MODE)
+// ══════════════════════════════════════════════
+function loadOrderIntoForm(o) {
+  editingId = o.id;
+  sv('fNum',       o.num);
+  sv('fPO',        o.po);
+  sv('fCliente',   o.cliente);
+  sv('fDataPed',   o.dataPed);
+  sv('fDataEnt',   o.dataEnt || '');
+  sv('fStatus',    o.status);
+  sv('fNfPre',     o.nfPre || '');
+  sv('fWebhook',   o.webhook || 'https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg');
+  sv('fTransNome', o.transNome || '');
+  sv('fTransVol',  o.transVol || '');
+  sv('fTransPct',  o.transPct || 0);
+  sv('fPasta',     o.pasta || 'pedidos');
+
+  // Produtos
+  document.getElementById('produtosBody').innerHTML = '';
+  (o.produtos || []).forEach(p => addRow(p.name, p.desc, p.qty, p.pct));
+  if (!o.produtos || !o.produtos.length) addRow();
+
+  // Edit banner
+  const label = `#${o.num}${o.po?' / '+o.po:''}`;
+  document.getElementById('editBannerLabel').textContent = `Pedido ${label}`;
+  document.getElementById('editBanner').style.display = '';
+
+  // Clear log
+  document.getElementById('publishLog').innerHTML = '';
+  document.getElementById('publishLog').classList.remove('visible');
+
+  goTab('novo', document.getElementById('sideNovo'));
+  onFormChange();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast(`Editando Pedido #${o.num} — altere e republique.`, 'info');
+}
+
+// ══════════════════════════════════════════════
+//  HTML BUILDER
+// ══════════════════════════════════════════════
+function buildHtml() {
+  const num     = gv('fNum');
+  const po      = gv('fPO');
+  const cliente = gv('fCliente');
+  const dataPed = gv('fDataPed');
+  const dataEnt = gv('fDataEnt');
+  const status  = parseInt(gv('fStatus'));
+  const nfPre   = gv('fNfPre');
+  const webhook = gv('fWebhook');
+  const tNome   = gv('fTransNome');
+  const tVol    = parseInt(gv('fTransVol'))||0;
+  const tPct    = parseInt(gv('fTransPct'))||0;
+  const prods   = getProdutos();
+
+  const orderLabel = [num, po].filter(Boolean).join(' / ') || 'S/N';
+  const dateLabel  = [dataPed, dataEnt?`Entrega: ${dataEnt}`:''].filter(Boolean).join(' · ');
+  const tInitials  = tNome.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || 'TR';
+  const nfHtml     = nfPre.replace(/\n/g,'<br>');
+  const prodJson   = JSON.stringify(prods).replace(/<\/script>/gi,'<\\/script>');
+  const now        = new Date().toLocaleString('pt-BR');
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seekmed — Pedido ${orderLabel}</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0SJEFLLXH6"><\/script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-0SJEFLLXH6');
+<\/script>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f9;--surface:#fff;--surface2:#f0f3f7;--border:#e2e7ef;--text:#1a2236;--text2:#5a6b85;--accent:#0057b7;--accent-light:#e8f0fb;--accent2:#00a3a3;--success:#00875a;--success-light:#e3f5ee;--warning:#e07b00;--warning-light:#fff4e0;--danger:#c0392b;--radius:14px;--shadow:0 2px 12px rgba(26,34,54,.07);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.logo-icon svg{width:20px;height:20px;}
+.logo-text{font-size:18px;font-weight:600;letter-spacing:-.3px;color:var(--text);}
+.logo-text span{color:var(--accent);}
+.badge-status{padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;}
+.badge-status.em-preparacao{background:var(--warning-light);color:var(--warning);}
+.badge-status.pronto{background:var(--success-light);color:var(--success);}
+.badge-status.enviado{background:var(--accent-light);color:var(--accent);}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.container{max-width:1100px;margin:0 auto;padding:36px 24px 60px;}
+.grid{display:grid;gap:24px;}.grid-2{grid-template-columns:1fr 1fr;}
+@media(max-width:760px){.grid-2{grid-template-columns:1fr}header{padding:0 20px}.container{padding:24px 16px 60px}}
+.card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-header-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-header-icon.blue{background:var(--accent-light);color:var(--accent);}
+.card-header-icon.teal{background:#e0f7f7;color:var(--accent2);}
+.card-header-icon.orange{background:var(--warning-light);color:var(--warning);}
+.card-header-icon svg{width:16px;height:16px;}
+.card-title{font-size:14px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--text2);}
+.card-body{padding:24px;}
+.order-meta{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px;}
+.order-number{font-size:28px;font-weight:600;letter-spacing:-.5px;}
+.order-sub{font-size:13px;color:var(--text2);margin-top:4px;}.order-sub strong{color:var(--text);}
+.order-updated{font-size:11px;color:#b0bac8;margin-top:6px;}
+.steps{display:flex;align-items:center;margin:8px 0 4px;}
+.step{display:flex;flex-direction:column;align-items:center;flex:1;}
+.step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text2);z-index:1;transition:all .3s;}
+.step.done .step-circle{background:var(--accent);border-color:var(--accent);color:#fff;}
+.step.active .step-circle{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px var(--accent-light);}
+.step-label{font-size:11px;color:var(--text2);margin-top:8px;text-align:center;white-space:nowrap;}
+.step.done .step-label,.step.active .step-label{color:var(--accent);font-weight:500;}
+.step-line{flex:1;height:2px;background:var(--border);margin-bottom:20px;position:relative;overflow:hidden;}
+.step-line.done::after{content:'';position:absolute;inset:0;background:var(--accent);}
+.product-list{display:flex;flex-direction:column;gap:16px;}
+.product-item{display:flex;align-items:center;gap:16px;}
+.product-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);width:20px;flex-shrink:0;text-align:right;}
+.product-info{flex:1;min-width:0;}
+.product-name{font-size:14px;font-weight:500;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.product-desc{font-size:12px;color:var(--text2);margin-bottom:8px;}
+.bar-wrap{height:6px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.full{background:var(--success);}.bar-fill.low{background:var(--danger);}.bar-fill.mid{background:var(--warning);}
+.product-qty{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;width:70px;text-align:right;flex-shrink:0;}
+.product-divider{height:1px;background:var(--border);}
+.nf-prefixo{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;}
+.nf-prefixo strong{color:var(--text);}
+.nf-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:8px;}
+.nf-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-family:inherit;font-size:14px;color:var(--text);background:#fff;resize:vertical;min-height:90px;transition:border-color .2s,box-shadow .2s;outline:none;}
+.nf-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+.nf-textarea::placeholder{color:#b0bac8;}
+.nf-send-btn{margin-top:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s;}
+.nf-send-btn:hover{background:#0046a0;}
+.nf-sent-msg{display:none;align-items:center;gap:8px;margin-top:10px;color:var(--success);font-size:13px;font-weight:500;}
+.transport-info{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.transport-avatar{width:44px;height:44px;background:var(--accent-light);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;font-size:16px;flex-shrink:0;}
+.transport-name{font-weight:600;font-size:15px;}.transport-vol{font-size:13px;color:var(--text2);margin-top:2px;}
+.transport-pct-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+.transport-pct-header span:last-child{font-family:'DM Mono',monospace;font-weight:500;color:var(--accent);}
+.transport-bar{height:10px;background:var(--surface2);border-radius:8px;overflow:hidden;}
+.transport-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:8px;}
+.transport-stages{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text2);}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.tag.blue{background:var(--accent-light);color:var(--accent);}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+    <span class="logo-text">Seek<span>med</span></span>
+  </div>
+  <span id="hBadge" class="badge-status em-preparacao"><span class="dot"></span><span id="hTxt">Em Preparação</span></span>
+</header>
+<div class="container">
+  <div class="order-meta">
+    <div>
+      <div class="order-number">Pedido #${orderLabel}</div>
+      <div class="order-sub">Cliente: <strong>${cliente||'—'}</strong>${dateLabel?` &nbsp;·&nbsp; <strong>${dateLabel}</strong>`:''}</div>
+      <div class="order-updated">Última atualização: ${now}</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-body" style="padding:28px 32px 24px;">
+      <div class="steps">
+        <div class="step" id="s1"><div class="step-circle">1</div><div class="step-label">Pedido Recebido</div></div>
+        <div class="step-line" id="l1"></div>
+        <div class="step" id="s2"><div class="step-circle">2</div><div class="step-label">Em Preparação</div></div>
+        <div class="step-line" id="l2"></div>
+        <div class="step" id="s3"><div class="step-circle">3</div><div class="step-label">Pronto para Envio</div></div>
+        <div class="step-line" id="l3"></div>
+        <div class="step" id="s4"><div class="step-circle">4</div><div class="step-label">Em Trânsito</div></div>
+        <div class="step-line" id="l4"></div>
+        <div class="step" id="s5"><div class="step-circle">5</div><div class="step-label">Entregue</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-header"><div class="card-header-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><div class="card-title">Produtos</div></div>
+      <div class="card-body"><div class="product-list" id="productList"></div></div>
+    </div>
+    <div class="grid" style="gap:24px;">
+      <div class="card">
+        <div class="card-header"><div class="card-header-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="card-title">Obs. Nota Fiscal</div></div>
+        <div class="card-body">
+          <div class="nf-prefixo"><strong>Dados pré-definidos:</strong><br>${nfHtml||'—'}</div>
+          <div class="nf-label">Observação complementar</div>
+          <textarea class="nf-textarea" id="nfObs" placeholder="Digite aqui qualquer observação adicional…"></textarea>
+          <button class="nf-send-btn" onclick="sendObs()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Enviar Observação
+          </button>
+          <div class="nf-sent-msg" id="nfSent"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Enviado!</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-header-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="card-title">Transporte</div></div>
+        <div class="card-body">
+          <div class="transport-info">
+            <div class="transport-avatar">${tInitials}</div>
+            <div><div class="transport-name">${tNome||'—'}</div><div class="transport-vol">${tVol} volume${tVol!==1?'s':''} &nbsp;·&nbsp; <span class="tag blue" id="tTag">—</span></div></div>
+          </div>
+          <div class="transport-pct-header"><span>Progresso de entrega</span><span>${tPct}%</span></div>
+          <div class="transport-bar"><div class="transport-bar-fill" style="width:${tPct}%"></div></div>
+          <div class="transport-stages"><span>Coletado</span><span>Em rota</span><span>Chegando</span><span>Entregue</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const sm={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
+const sv=${status};
+for(let i=1;i<=5;i++){const e=document.getElementById("s"+i);e.className="step"+(i<sv?" done":i===sv?" active":"");const c=e.querySelector(".step-circle");c.innerHTML=i<sv?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':i;if(i<5)document.getElementById("l"+i).className="step-line"+(i<sv?" done":"");}
+const hb=document.getElementById("hBadge");hb.className="badge-status "+sm[sv].c;hb.innerHTML='<span class="dot"></span><span>'+sm[sv].l+'</span>';
+const pr=${prodJson};const pl=document.getElementById("productList");
+pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
+const tg=document.getElementById("tTag"),tp=${tPct};
+tg.textContent=tp<10?"Aguardando":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
+function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("${webhook}",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"${orderLabel}",cliente:"${cliente}",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.textContent="✓ Enviado!";document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
+<\/script>
+</body></html>`;
+}
+
+// ══════════════════════════════════════════════
+//  PREVIEW
+// ══════════════════════════════════════════════
+function refreshPreview() {
+  const frame = document.getElementById('previewFrame');
+  frame.src = URL.createObjectURL(new Blob([buildHtml()], {type:'text/html'}));
+}
+
+// ══════════════════════════════════════════════
+//  PUBLISH TO GITHUB
+// ══════════════════════════════════════════════
+function log(msg, type='info') {
+  const box = document.getElementById('publishLog');
+  box.classList.add('visible');
+  box.innerHTML += `<div class="log-line ${type}"><span>${type==='ok'?'✓':type==='err'?'✗':'›'}</span><span>${msg}</span></div>`;
+  box.scrollTop = box.scrollHeight;
+}
+function clearLog() {
+  const b = document.getElementById('publishLog');
+  b.innerHTML=''; b.classList.add('visible');
+}
+
+async function publishToGitHub() {
+  const cfg = loadConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    showToast('Configure o GitHub primeiro!','error');
+    goTab('config', document.getElementById('sideConfig'));
+    return;
   }
+  const num = gv('fNum');
+  if (!num) { showToast('Informe o número do pedido!','error'); return; }
+
+  const pasta   = gv('fPasta') || 'pedidos';
+  const path    = `${pasta}/${num}/index.html`;
+  const html    = buildHtml();
+  const base64  = btoa(unescape(encodeURIComponent(html)));
+  const apiUrl  = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+  const headers = { Authorization:`token ${cfg.token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' };
+
+  const btn = document.getElementById('btnPublish');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Publicando…';
+  clearLog();
+
+  try {
+    log(`Verificando ${path}…`);
+    let sha = null;
+    const check = await fetch(apiUrl, {headers});
+    if (check.ok) { sha = (await check.json()).sha; log('Arquivo existente — atualizando…'); }
+    else log('Arquivo novo — criando…');
+
+    const body = {
+      message: sha
+        ? `Atualiza Pedido ${num} · ${new Date().toLocaleString('pt-BR')}`
+        : `Cria index.html — Pedido ${num}`,
+      content: base64,
+      branch: cfg.branch || 'main'
+    };
+    if (sha) body.sha = sha;
+
+    log(`Enviando para ${cfg.owner}/${cfg.repo}…`);
+    const put = await fetch(apiUrl, { method:'PUT', headers, body:JSON.stringify(body) });
+    if (!put.ok) { const e = await put.json(); throw new Error(e.message||put.status); }
+
+    const pagesUrl = `https://${cfg.owner}.github.io/${cfg.repo}/${pasta}/${num}/`;
+    log('Publicado com sucesso!', 'ok');
+    log(`URL: ${pagesUrl}`, 'ok');
+
+    // Save / update in history — store all fields for re-editing
+    const order = {
+      id: editingId || Date.now(),
+      num, po:gv('fPO'), cliente:gv('fCliente'),
+      dataPed:gv('fDataPed'), dataEnt:gv('fDataEnt'),
+      status:parseInt(gv('fStatus')),
+      nfPre:gv('fNfPre'), webhook:gv('fWebhook'),
+      transNome:gv('fTransNome'), transVol:gv('fTransVol'), transPct:gv('fTransPct'),
+      pasta, path, pagesUrl,
+      produtos: getProdutos(),
+      publishedAt: new Date().toLocaleString('pt-BR'),
+      html
+    };
+    let orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
+    const idx = orders.findIndex(o => o.id === order.id || o.num === num);
+    if (idx >= 0) orders[idx] = order; else orders.unshift(order);
+    localStorage.setItem('sk_orders', JSON.stringify(orders.slice(0,50)));
+    updateSideCount();
+
+    editingId = order.id; // stay in edit mode after publish
+    document.getElementById('editBannerLabel').textContent = `Pedido #${num}${order.po?' / '+order.po:''}`;
+    document.getElementById('editBanner').style.display = '';
+
+    showToast(`Pedido #${num} ${sha?'atualizado':'publicado'}! GitHub Pages em ~1 min.`, 'success');
+
+  } catch(e) {
+    log(`Erro: ${e.message}`, 'err');
+    showToast('Erro ao publicar. Veja o log.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> <span id="btnPublishLabel">${editingId?`Atualizar Pedido #${num}`:'Publicar no GitHub'}</span>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PEDIDOS LIST
+// ══════════════════════════════════════════════
+const sLbl = ['','Recebido','Em Preparação','Pronto','Em Trânsito','Entregue'];
+const sCls = ['','status-prep','status-prep','status-pronto','status-transit','status-entregue'];
+
+function renderSavedOrders() {
+  const orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
+  const el = document.getElementById('pedidosList');
+  if (!orders.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:32px;">Nenhum pedido publicado ainda.</div>';
+    return;
+  }
+  el.innerHTML = orders.map(o => `
+    <div class="pedido-item">
+      <div class="pedido-item-top">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;">
+            <span class="pedido-num">#${o.num}${o.po?' / '+o.po:''}</span>
+            <span class="pedido-status ${sCls[o.status]}">${sLbl[o.status]}</span>
+          </div>
+          <div class="pedido-client">${o.cliente||'—'}</div>
+          <div class="pedido-meta">
+            <span>Publicado: ${o.publishedAt}</span>
+            <span>·</span>
+            <code class="pedido-url">${o.path}</code>
+          </div>
+        </div>
+        <div class="pedido-actions">
+          <button class="btn btn-edit btn-xs" onclick="editOrder(${o.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar
+          </button>
+          <a href="${o.pagesUrl}" target="_blank" class="btn btn-secondary btn-xs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Ver
+          </a>
+          <button class="btn btn-secondary btn-xs" onclick="reDownload(${o.id})" title="Baixar HTML">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button class="btn btn-secondary btn-xs" onclick="deleteOrder(${o.id})" title="Remover do histórico" style="color:var(--danger);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function editOrder(id) {
+  const orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  loadOrderIntoForm(o);
+}
+
+function reDownload(id) {
+  const o = JSON.parse(localStorage.getItem('sk_orders')||'[]').find(x => x.id === id);
+  if (!o) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([o.html],{type:'text/html'}));
+  a.download = 'index.html'; a.click();
+}
+
+function deleteOrder(id) {
+  if (!confirm('Remover do histórico? (O arquivo no GitHub não será deletado)')) return;
+  let orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
+  orders = orders.filter(x => x.id !== id);
+  localStorage.setItem('sk_orders', JSON.stringify(orders));
+  renderSavedOrders();
+  updateSideCount();
+}
+
+function updateSideCount() {
+  const orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
+  const el = document.getElementById('sideCount');
+  if (orders.length) { el.textContent = orders.length; el.style.display=''; }
+  else el.style.display = 'none';
+}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+function downloadHtml() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([buildHtml()],{type:'text/html'}));
+  a.download = 'index.html'; a.click();
+}
+
+function clearForm() {
+  editingId = null;
+  ['fNum','fPO','fCliente','fDataPed','fDataEnt','fNfPre','fTransNome'].forEach(id=>sv(id,''));
+  sv('fTransPct','0'); sv('fTransVol',''); sv('fStatus','2'); sv('fPasta','pedidos');
+  document.getElementById('produtosBody').innerHTML = '';
+  document.getElementById('publishLog').innerHTML = '';
+  document.getElementById('publishLog').classList.remove('visible');
+  document.getElementById('editBanner').style.display = 'none';
+  const lbl = document.getElementById('btnPublishLabel');
+  if (lbl) lbl.textContent = 'Publicar no GitHub';
+  addRow();
+  onFormChange();
+}
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.className = `toast ${type}`;
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.display = 'flex';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(()=>t.style.display='none', 4500);
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+addRow();
+updateGhBanner();
+updatePathPreview();
+refreshPreview();
+updateSideCount();
 </script>
-
 </body>
 </html>
