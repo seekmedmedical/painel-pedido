@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seekmed · Backoffice — Gerador de Pedidos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1623;
+  --bg2: #161e2e;
+  --surface: #1c2740;
+  --surface2: #22304a;
+  --border: #2a3a58;
+  --border2: #344766;
+  --text: #e8edf5;
+  --text2: #8a9bbf;
+  --text3: #5a6b85;
+  --accent: #2d7ff9;
+  --accent-dim: #1a4a96;
+  --accent-glow: rgba(45,127,249,0.15);
+  --success: #00c07f;
+  --success-dim: rgba(0,192,127,0.12);
+  --warning: #f5a623;
+  --warning-dim: rgba(245,166,35,0.12);
+  --danger: #f04452;
+  --danger-dim: rgba(240,68,82,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── SIDEBAR ── */
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 220px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.logo-mark {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.logo-mark svg { width: 16px; height: 16px; }
+
+.logo-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.logo-name span { color: var(--accent); }
+
+.sidebar-section {
+  padding: 0 12px;
+  margin-bottom: 4px;
+}
+
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text3);
+  padding: 8px 8px 6px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--text2);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+}
+
+.sidebar-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+.sidebar-link:hover { background: var(--surface); color: var(--text); }
+.sidebar-link.active { background: var(--accent-glow); color: var(--accent); }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 20px 0;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: 220px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.topbar-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+.content { padding: 32px; max-width: 1200px; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 4px;
+  margin-bottom: 28px;
+  border: 1px solid var(--border);
+  width: fit-content;
+}
+
+.tab {
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text2);
+  border: none;
+  background: none;
+  transition: all .15s;
+}
+
+.tab:hover { color: var(--text); }
+.tab.active { background: var(--accent); color: #fff; }
+
+/* ── GRID LAYOUT ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.span-2 { grid-column: span 2; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.card-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-head-left { display: flex; align-items: center; gap: 10px; }
+
+.card-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.card-icon.blue { background: var(--accent-glow); color: var(--accent); }
+.card-icon.green { background: var(--success-dim); color: var(--success); }
+.card-icon.orange { background: var(--warning-dim); color: var(--warning); }
+.card-icon.red { background: var(--danger-dim); color: var(--danger); }
+.card-icon svg { width: 14px; height: 14px; }
+
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.card-body { padding: 20px; }
+
+/* ── FORM ELEMENTS ── */
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--text3); }
+
+.field select option { background: var(--surface); }
+
+.field textarea { resize: vertical; min-height: 80px; }
+
+.field-row { display: flex; gap: 12px; }
+.field-row .field { flex: 1; margin-bottom: 0; }
+
+.field-hint {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ── PRODUTOS TABLE ── */
+.produtos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.produtos-table th {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text3);
+  padding: 0 10px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.produto-row td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.produto-row td input {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  width: 100%;
+  transition: border-color .15s;
+}
+
+.produto-row td input:focus { border-color: var(--accent); }
+.produto-row td input::placeholder { color: var(--text3); }
+
+.produto-row td input[type="number"] { width: 70px; }
+
+.td-pct { width: 90px; }
+.td-qty { width: 120px; }
+.td-del { width: 36px; }
+
+.del-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: color .15s;
+}
+
+.del-btn:hover { color: var(--danger); }
+.del-btn svg { width: 14px; height: 14px; }
+
+.add-row-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text3);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 9px 14px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 12px;
+  transition: border-color .15s, color .15s;
+}
+
+.add-row-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all .15s;
+}
+
+.btn svg { width: 14px; height: 14px; }
+
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #1a6de8; }
+.btn-primary:active { transform: scale(.98); }
+
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { color: var(--text); border-color: var(--border2); }
+
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #00a86b; }
+
+.btn-sm { padding: 7px 14px; font-size: 12.5px; }
+
+/* ── PREVIEW ── */
+.preview-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.preview-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.preview-dots { display: flex; gap: 5px; }
+.preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+.preview-dot.r { background: #f04452; }
+.preview-dot.y { background: #f5a623; }
+.preview-dot.g { background: #00c07f; }
+
+.preview-iframe {
+  width: 100%;
+  height: 520px;
+  border: none;
+  background: #f4f6f9;
+}
+
+/* ── PEDIDOS LIST ── */
+.pedidos-list { display: flex; flex-direction: column; gap: 8px; }
+
+.pedido-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  transition: border-color .15s;
+}
+
+.pedido-item:hover { border-color: var(--border2); }
+
+.pedido-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.pedido-client { font-size: 13px; color: var(--text); font-weight: 500; }
+.pedido-date { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+.pedido-status {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.status-prep { background: var(--warning-dim); color: var(--warning); }
+.status-pronto { background: var(--success-dim); color: var(--success); }
+.status-transit { background: var(--accent-glow); color: var(--accent); }
+.status-entregue { background: rgba(255,255,255,0.05); color: var(--text2); }
+
+.pedido-actions { display: flex; gap: 8px; }
+
+/* ── OUTPUT CODE ── */
+.code-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  overflow-x: auto;
+  white-space: pre;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* ── SUCCESS TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--success);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,192,127,0.25);
+  z-index: 999;
+  animation: toastIn .25s ease;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast svg { width: 16px; height: 16px; }
+
+/* ── SEPARADOR ── */
+.section-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* ── STEP INDICATOR MINI ── */
+.step-mini-wrap { display: flex; align-items: center; gap: 4px; }
+
+.step-mini {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+.step-mini.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.step-mini.active { border-color: var(--accent); color: var(--accent); }
+
+.step-line-mini { flex: 1; height: 1.5px; background: var(--border); min-width: 20px; }
+.step-line-mini.done { background: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+  .span-2 { grid-column: span 1; }
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    </div>
+    <div class="logo-name">Seek<span>med</span></div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Backoffice</div>
+    <button class="sidebar-link active" onclick="showTab('novo')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Novo Pedido
+    </button>
+    <button class="sidebar-link" onclick="showTab('pedidos')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Pedidos Criados
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    configseek · v1.0<br>
+    Seekmed © 2026
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">Novo Pedido</div>
+      <div class="topbar-sub">Preencha os dados para gerar o arquivo HTML do pedido</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm" onclick="clearForm()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg>
+        Limpar
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="generateAndSave()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Gerar & Baixar HTML
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ TAB: NOVO PEDIDO ══ -->
+    <div id="tabNovo">
+
+      <div class="form-grid">
+
+        <!-- COLUNA ESQUERDA -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- DADOS DO PEDIDO -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon blue">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <span class="card-title">Dados do Pedido</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="field-row">
+                <div class="field">
+                  <label>Nº Pedido Interno</label>
+                  <input type="text" id="fPedidoNum" placeholder="Ex: 1380" oninput="updatePreview()">
+                </div>
+                <div class="field">
+                  <label>Nº Pedido Cliente (PO)</label>
+                  <input type="text" id="fPedidoPO" placeholder="Ex: ISCPPO00043591" oninput="updatePreview()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Nome do Cliente</label>
+                <input type="text" id="fCliente" placeholder="Ex: Hospital São Lucas / CNPJ" oninput="updatePreview()">
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Data do Pedido</label>
+                  <input type="text" id="fDataPedido" placeholder="DD/MM/AAAA" oninput="updatePreview()">
+                </div>
+                <div class="field">
+                  <label>Prazo de Entrega</label>
+                  <input type="text" id="fDataEntrega" placeholder="DD/MM/AAAA" oninput="updatePreview()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Status Atual</label>
+                <select id="fStatus" onchange="updatePreview()">
+                  <option value="1">1 — Pedido Recebido</option>
+                  <option value="2" selected>2 — Em Preparação</option>
+                  <option value="3">3 — Pronto para Envio</option>
+                  <option value="4">4 — Em Trânsito</option>
+                  <option value="5">5 — Entregue</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- NOTA FISCAL -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon orange">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <span class="card-title">Observações Nota Fiscal</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="field">
+                <label>Texto pré-fixado (visível ao cliente)</label>
+                <textarea id="fNfPrefixo" rows="4" placeholder="Ex: Produtos de uso médico-hospitalar. CFOP 6102. Local de entrega: ..." oninput="updatePreview()"></textarea>
+                <div class="field-hint">Este texto aparece destacado antes do campo onde o cliente pode adicionar observações.</div>
+              </div>
+              <div class="field">
+                <label>Webhook Make.com (envio de obs. do cliente)</label>
+                <input type="text" id="fWebhook" value="https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg" oninput="updatePreview()">
+                <div class="field-hint">URL que receberá as observações enviadas pelo cliente.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TRANSPORTE -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon green">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <span class="card-title">Transporte</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="field">
+                <label>Nome da Transportadora</label>
+                <input type="text" id="fTransNome" placeholder="Ex: Transportadora Rápida Ltda." oninput="updatePreview()">
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Volumes</label>
+                  <input type="number" id="fTransVol" placeholder="Ex: 4" min="0" oninput="updatePreview()">
+                </div>
+                <div class="field">
+                  <label>Progresso de entrega (%)</label>
+                  <input type="number" id="fTransPct" placeholder="0–100" min="0" max="100" value="0" oninput="updatePreview()">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- PRODUTOS -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon blue">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                </div>
+                <span class="card-title">Produtos</span>
+              </div>
+            </div>
+            <div class="card-body" style="padding:16px;">
+              <table class="produtos-table">
+                <thead>
+                  <tr>
+                    <th>Nome / Descrição</th>
+                    <th class="td-qty">Quantidade</th>
+                    <th class="td-pct">Barra %</th>
+                    <th class="td-del"></th>
+                  </tr>
+                </thead>
+                <tbody id="produtosBody"></tbody>
+              </table>
+              <button class="add-row-btn" onclick="addProdutoRow()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Adicionar produto
+              </button>
+            </div>
+          </div>
+
+          <!-- PREVIEW -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon blue">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <span class="card-title">Pré-visualização</span>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="refreshPreview()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg>
+                Atualizar
+              </button>
+            </div>
+            <div class="preview-wrap" style="border:none;border-radius:0;">
+              <div class="preview-topbar">
+                <div class="preview-dots">
+                  <div class="preview-dot r"></div>
+                  <div class="preview-dot y"></div>
+                  <div class="preview-dot g"></div>
+                </div>
+                <span id="previewUrl" style="font-size:11px;">seekmed.github.io/Seekmed/pedidos/...</span>
+              </div>
+              <iframe id="previewFrame" class="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+          </div>
+
+          <!-- GERAR -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon green">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <span class="card-title">Gerar Arquivo</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="field">
+                <label>Pasta de destino (no repositório)</label>
+                <input type="text" id="fPasta" placeholder="pedidos" value="pedidos" oninput="updateFolderPreview()">
+                <div class="field-hint">O arquivo será gerado como: <code id="folderPreview" style="color:var(--accent)">pedidos/1380/index.html</code></div>
+              </div>
+              <div class="section-sep"></div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="generateAndSave()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Baixar index.html
+                </button>
+                <button class="btn btn-secondary" onclick="copyHtml()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar HTML
+                </button>
+              </div>
+              <div class="field-hint" style="margin-top:12px;">
+                📁 Suba o arquivo em: <code style="color:var(--accent)" id="uploadPathHint">pedidos/1380/index.html</code> no seu repositório GitHub.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: PEDIDOS CRIADOS ══ -->
+    <div id="tabPedidos" style="display:none;">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <span class="card-title">Pedidos Gerados</span>
+          </div>
+          <span style="font-size:12px;color:var(--text3);">Salvos neste navegador</span>
+        </div>
+        <div class="card-body">
+          <div class="pedidos-list" id="pedidosList">
+            <div style="color:var(--text3);font-size:13px;text-align:center;padding:24px;">
+              Nenhum pedido gerado ainda. Use "Novo Pedido" para criar o primeiro.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">HTML gerado com sucesso!</span>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────
+let produtos = [];
+let savedOrders = JSON.parse(localStorage.getItem('seekmed_orders') || '[]');
+
+// ─────────────────────────────────────────
+//  TABS
+// ─────────────────────────────────────────
+function showTab(tab) {
+  document.getElementById('tabNovo').style.display = tab === 'novo' ? '' : 'none';
+  document.getElementById('tabPedidos').style.display = tab === 'pedidos' ? '' : 'none';
+  document.getElementById('topbarTitle').textContent = tab === 'novo' ? 'Novo Pedido' : 'Pedidos Criados';
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if (tab === 'pedidos') renderSavedOrders();
+}
+
+// ─────────────────────────────────────────
+//  PRODUTOS
+// ─────────────────────────────────────────
+function addProdutoRow(name='', desc='', qty='', pct=100) {
+  const id = Date.now();
+  const tr = document.createElement('tr');
+  tr.className = 'produto-row';
+  tr.dataset.id = id;
+  tr.innerHTML = `
+    <td>
+      <input type="text" placeholder="Nome do produto" value="${name}" style="margin-bottom:4px;" oninput="updatePreview()">
+      <input type="text" placeholder="Descrição / lote / obs" value="${desc}" style="font-size:12px;" oninput="updatePreview()">
+    </td>
+    <td class="td-qty">
+      <input type="text" placeholder="Ex: Qt 10" value="${qty}" oninput="updatePreview()">
+    </td>
+    <td class="td-pct">
+      <input type="number" min="0" max="100" value="${pct}" oninput="updatePreview()">
+    </td>
+    <td class="td-del">
+      <button class="del-btn" onclick="removeProdutoRow(${id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </td>`;
+  document.getElementById('produtosBody').appendChild(tr);
+  updatePreview();
+}
+
+function removeProdutoRow(id) {
+  document.querySelector(`[data-id="${id}"]`)?.remove();
+  updatePreview();
+}
+
+function getProdutos() {
+  const rows = document.querySelectorAll('.produto-row');
+  return Array.from(rows).map(r => {
+    const inputs = r.querySelectorAll('input');
+    return {
+      name: inputs[0].value.trim(),
+      desc: inputs[1].value.trim(),
+      qty:  inputs[2].value.trim(),
+      pct:  parseInt(inputs[3].value) || 0
+    };
+  }).filter(p => p.name);
+}
+
+// ─────────────────────────────────────────
+//  FOLDER PREVIEW
+// ─────────────────────────────────────────
+function updateFolderPreview() {
+  const pasta = document.getElementById('fPasta').value.trim() || 'pedidos';
+  const num   = document.getElementById('fPedidoNum').value.trim() || '0000';
+  const path  = `${pasta}/${num}/index.html`;
+  document.getElementById('folderPreview').textContent = path;
+  document.getElementById('uploadPathHint').textContent = path;
+  document.getElementById('previewUrl').textContent = `seekmed.github.io/Seekmed/${path}`;
+}
+
+// ─────────────────────────────────────────
+//  GENERATE HTML (template)
+// ─────────────────────────────────────────
+function buildHtml() {
+  const num      = document.getElementById('fPedidoNum').value.trim();
+  const po       = document.getElementById('fPedidoPO').value.trim();
+  const cliente  = document.getElementById('fCliente').value.trim();
+  const dataPed  = document.getElementById('fDataPedido').value.trim();
+  const dataEnt  = document.getElementById('fDataEntrega').value.trim();
+  const status   = parseInt(document.getElementById('fStatus').value);
+  const nfPre    = document.getElementById('fNfPrefixo').value.trim().replace(/\n/g,'\\n');
+  const webhook  = document.getElementById('fWebhook').value.trim();
+  const tNome    = document.getElementById('fTransNome').value.trim();
+  const tVol     = parseInt(document.getElementById('fTransVol').value) || 0;
+  const tPct     = parseInt(document.getElementById('fTransPct').value) || 0;
+  const prods    = getProdutos();
+
+  const prodJson = JSON.stringify(prods);
+  const orderLabel = num ? (po ? `${num} / ${po}` : num) : (po || 'S/N');
+  const dateLabel  = dataPed ? (dataEnt ? `${dataPed} / Entrega: ${dataEnt}` : dataPed) : '';
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seekmed — Pedido ${orderLabel}</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f4f6f9;--surface:#ffffff;--surface2:#f0f3f7;--border:#e2e7ef;--text:#1a2236;--text2:#5a6b85;--accent:#0057b7;--accent-light:#e8f0fb;--accent2:#00a3a3;--success:#00875a;--success-light:#e3f5ee;--warning:#e07b00;--warning-light:#fff4e0;--danger:#c0392b;--radius:14px;--shadow:0 2px 12px rgba(26,34,54,.07);--shadow-lg:0 8px 32px rgba(26,34,54,.10);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+  header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .logo{display:flex;align-items:center;gap:12px;}
+  .logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .logo-icon svg{width:20px;height:20px;}
+  .logo-text{font-size:18px;font-weight:600;letter-spacing:-.3px;}
+  .logo-text span{color:var(--accent);}
+  .badge-status{padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;}
+  .badge-status.em-preparacao{background:var(--warning-light);color:var(--warning);}
+  .badge-status.pronto{background:var(--success-light);color:var(--success);}
+  .badge-status.enviado{background:var(--accent-light);color:var(--accent);}
+  .dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .container{max-width:1100px;margin:0 auto;padding:36px 24px 60px;}
+  .grid{display:grid;gap:24px;}
+  .grid-2{grid-template-columns:1fr 1fr;}
+  @media(max-width:760px){.grid-2{grid-template-columns:1fr}header{padding:0 20px}.container{padding:24px 16px 60px}}
+  .card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;}
+  .card-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .card-header-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .card-header-icon.blue{background:var(--accent-light);color:var(--accent);}
+  .card-header-icon.teal{background:#e0f7f7;color:var(--accent2);}
+  .card-header-icon.orange{background:var(--warning-light);color:var(--warning);}
+  .card-header-icon svg{width:16px;height:16px;}
+  .card-title{font-size:14px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--text2);}
+  .card-body{padding:24px;}
+  .order-meta{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px;}
+  .order-number{font-size:28px;font-weight:600;letter-spacing:-.5px;}
+  .order-sub{font-size:13px;color:var(--text2);margin-top:4px;}
+  .order-sub strong{color:var(--text);}
+  .steps{display:flex;align-items:center;margin:8px 0 4px;}
+  .step{display:flex;flex-direction:column;align-items:center;flex:1;}
+  .step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text2);z-index:1;transition:all .3s;}
+  .step.done .step-circle{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .step.active .step-circle{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px var(--accent-light);}
+  .step-label{font-size:11px;color:var(--text2);margin-top:8px;text-align:center;white-space:nowrap;}
+  .step.done .step-label,.step.active .step-label{color:var(--accent);font-weight:500;}
+  .step-line{flex:1;height:2px;background:var(--border);margin-bottom:20px;position:relative;overflow:hidden;}
+  .step-line.done::after{content:'';position:absolute;inset:0;background:var(--accent);}
+  .product-list{display:flex;flex-direction:column;gap:16px;}
+  .product-item{display:flex;align-items:center;gap:16px;}
+  .product-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);width:20px;flex-shrink:0;text-align:right;}
+  .product-info{flex:1;min-width:0;}
+  .product-name{font-size:14px;font-weight:500;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .product-desc{font-size:12px;color:var(--text2);margin-bottom:8px;}
+  .bar-wrap{height:6px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+  .bar-fill.full{background:var(--success);}
+  .bar-fill.low{background:var(--danger);}
+  .bar-fill.mid{background:var(--warning);}
+  .product-qty{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;width:70px;text-align:right;flex-shrink:0;}
+  .product-divider{height:1px;background:var(--border);}
+  .nf-prefixo{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;}
+  .nf-prefixo strong{color:var(--text);}
+  .nf-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:8px;}
+  .nf-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-family:inherit;font-size:14px;color:var(--text);background:#fff;resize:vertical;min-height:90px;transition:border-color .2s,box-shadow .2s;outline:none;}
+  .nf-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+  .nf-textarea::placeholder{color:#b0bac8;}
+  .nf-send-btn{margin-top:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s,transform .1s;}
+  .nf-send-btn:hover{background:#0046a0;}
+  .nf-sent-msg{display:none;align-items:center;gap:8px;margin-top:10px;color:var(--success);font-size:13px;font-weight:500;}
+  .transport-info{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .transport-avatar{width:44px;height:44px;background:var(--accent-light);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;font-size:16px;flex-shrink:0;}
+  .transport-name{font-weight:600;font-size:15px;}
+  .transport-vol{font-size:13px;color:var(--text2);margin-top:2px;}
+  .transport-pct-wrap{margin-top:8px;}
+  .transport-pct-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+  .transport-pct-header span:last-child{font-family:'DM Mono',monospace;font-weight:500;color:var(--accent);}
+  .transport-bar{height:10px;background:var(--surface2);border-radius:8px;overflow:hidden;}
+  .transport-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:8px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+  .transport-stages{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text2);}
+  .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+  .tag.blue{background:var(--accent-light);color:var(--accent);}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <span class="logo-text">Seek<span>med</span></span>
+  </div>
+  <div>
+    <span id="headerStatus" class="badge-status em-preparacao">
+      <span class="dot"></span><span id="headerStatusText">Em Preparação</span>
+    </span>
+  </div>
+</header>
+<div class="container">
+  <div class="order-meta">
+    <div>
+      <div class="order-number">Pedido #${orderLabel}</div>
+      <div class="order-sub">Cliente: <strong>${cliente || '—'}</strong> &nbsp;·&nbsp; Data: <strong>${dateLabel || '—'}</strong></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-body" style="padding:28px 32px 24px;">
+      <div class="steps" id="stepsContainer">
+        <div class="step" id="step1"><div class="step-circle">1</div><div class="step-label">Pedido Recebido</div></div>
+        <div class="step-line" id="line1"></div>
+        <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">Em Preparação</div></div>
+        <div class="step-line" id="line2"></div>
+        <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">Pronto para Envio</div></div>
+        <div class="step-line" id="line3"></div>
+        <div class="step" id="step4"><div class="step-circle">4</div><div class="step-label">Em Trânsito</div></div>
+        <div class="step-line" id="line4"></div>
+        <div class="step" id="step5"><div class="step-circle">5</div><div class="step-label">Entregue</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <div class="card-title">Produtos</div>
+      </div>
+      <div class="card-body"><div class="product-list" id="productList"></div></div>
+    </div>
+    <div class="grid" style="gap:24px;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <div class="card-title">Observações da Nota Fiscal</div>
+        </div>
+        <div class="card-body">
+          <div class="nf-prefixo" id="nfPrefixo"><strong>Dados pré-definidos:</strong><br>${nfPre.replace(/\\n/g,'<br>')}</div>
+          <div class="nf-label">Adicionar observação complementar</div>
+          <textarea class="nf-textarea" id="nfObs" placeholder="Digite aqui qualquer observação adicional…"></textarea>
+          <button class="nf-send-btn" onclick="sendNfObs()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Enviar Observação
+          </button>
+          <div class="nf-sent-msg" id="nfSentMsg">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Observação enviada com sucesso!
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <div class="card-title">Status de Transporte</div>
+        </div>
+        <div class="card-body">
+          <div class="transport-info">
+            <div class="transport-avatar" id="transportAvatar">${tNome.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'TR'}</div>
+            <div>
+              <div class="transport-name">${tNome||'—'}</div>
+              <div class="transport-vol"><span>${tVol} volume${tVol!==1?'s':''}</span> &nbsp;·&nbsp; <span class="tag blue" id="transportTag">—</span></div>
+            </div>
+          </div>
+          <div class="transport-pct-wrap">
+            <div class="transport-pct-header"><span>Progresso de entrega</span><span id="transportPctLabel">${tPct}%</span></div>
+            <div class="transport-bar"><div class="transport-bar-fill" id="transportBar" style="width:${tPct}%"></div></div>
+            <div class="transport-stages"><span>Coletado</span><span>Em rota</span><span>Chegando</span><span>Entregue</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const statusMap={1:{label:"Pedido Recebido",cls:"em-preparacao"},2:{label:"Em Preparação",cls:"em-preparacao"},3:{label:"Pronto para Envio",cls:"pronto"},4:{label:"Em Trânsito",cls:"enviado"},5:{label:"Entregue",cls:"pronto"}};
+const s=${status};
+function renderSteps(){for(let i=1;i<=5;i++){const el=document.getElementById("step"+i);el.className="step";if(i<s)el.classList.add("done");else if(i===s)el.classList.add("active");const c=el.querySelector(".step-circle");c.innerHTML=i<s?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':i;if(i<5){const l=document.getElementById("line"+i);l.className="step-line"+(i<s?" done":"");}};const b=document.getElementById("headerStatus");const info=statusMap[s];b.className="badge-status "+info.cls;b.innerHTML='<span class="dot"></span><span>'+info.label+'</span>';}
+const prods=${prodJson};
+function renderProducts(){const list=document.getElementById("productList");list.innerHTML="";prods.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";list.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<prods.length-1?'<div class="product-divider" style="margin:12px 0;"></div>':'')+'</div>';});}
+const tPct=${tPct};
+const tag=document.getElementById("transportTag");
+if(tPct<10)tag.textContent="Aguardando coleta";else if(tPct<50)tag.textContent="Em rota";else if(tPct<90)tag.textContent="Em trânsito";else if(tPct<100)tag.textContent="Chegando";else tag.textContent="Entregue";
+function sendNfObs(){const txt=document.getElementById("nfObs").value.trim();if(!txt)return;const btn=document.querySelector(".nf-send-btn");btn.disabled=true;fetch("${webhook}",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"${orderLabel}",cliente:"${cliente}",observacao:txt,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){btn.style.background="var(--success)";btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Enviado!';document.getElementById("nfSentMsg").style.display="flex";setTimeout(()=>{btn.disabled=false;btn.style.background="";btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSentMsg").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw new Error();}).catch(()=>{alert("Erro ao conectar. Tente novamente.");btn.disabled=false;});}
+renderSteps();renderProducts();
+<\/script>
+</body>
+</html>`;
+}
+
+// ─────────────────────────────────────────
+//  PREVIEW
+// ─────────────────────────────────────────
+let previewTimer = null;
+function updatePreview() {
+  updateFolderPreview();
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(refreshPreview, 600);
+}
+
+function refreshPreview() {
+  const html = buildHtml();
+  const frame = document.getElementById('previewFrame');
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  frame.src = url;
+}
+
+// ─────────────────────────────────────────
+//  GERAR & BAIXAR
+// ─────────────────────────────────────────
+function generateAndSave() {
+  const num = document.getElementById('fPedidoNum').value.trim() || 'pedido';
+  const html = buildHtml();
+
+  // Download
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+
+  // Save to localStorage
+  const order = {
+    id: Date.now(),
+    num,
+    po: document.getElementById('fPedidoPO').value.trim(),
+    cliente: document.getElementById('fCliente').value.trim(),
+    dataPed: document.getElementById('fDataPedido').value.trim(),
+    status: parseInt(document.getElementById('fStatus').value),
+    pasta: document.getElementById('fPasta').value.trim() || 'pedidos',
+    createdAt: new Date().toLocaleString('pt-BR'),
+    html
+  };
+  savedOrders.unshift(order);
+  localStorage.setItem('seekmed_orders', JSON.stringify(savedOrders.slice(0, 50)));
+
+  showToast('HTML gerado e download iniciado!');
+}
+
+function copyHtml() {
+  const html = buildHtml();
+  navigator.clipboard.writeText(html).then(() => showToast('HTML copiado para o clipboard!'));
+}
+
+// ─────────────────────────────────────────
+//  SAVED ORDERS LIST
+// ─────────────────────────────────────────
+const statusLabels = ['','Recebido','Em Preparação','Pronto','Em Trânsito','Entregue'];
+const statusCls    = ['','status-prep','status-prep','status-pronto','status-transit','status-entregue'];
+
+function renderSavedOrders() {
+  const el = document.getElementById('pedidosList');
+  if (!savedOrders.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:24px;">Nenhum pedido gerado ainda.</div>';
+    return;
+  }
+  el.innerHTML = savedOrders.map(o => `
+    <div class="pedido-item">
+      <div>
+        <div class="pedido-num">#${o.num}${o.po ? ' / '+o.po : ''}</div>
+        <div class="pedido-client">${o.cliente || '—'}</div>
+        <div class="pedido-date">${o.createdAt} · ${o.pasta}/${o.num}/index.html</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="pedido-status ${statusCls[o.status]}">${statusLabels[o.status]}</span>
+        <div class="pedido-actions">
+          <button class="btn btn-secondary btn-sm" onclick="redownload(${o.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Baixar
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="deleteOrder(${o.id})" style="color:var(--danger-dim);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function redownload(id) {
+  const o = savedOrders.find(x => x.id === id);
+  if (!o) return;
+  const blob = new Blob([o.html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  showToast('Download iniciado!');
+}
+
+function deleteOrder(id) {
+  savedOrders = savedOrders.filter(x => x.id !== id);
+  localStorage.setItem('seekmed_orders', JSON.stringify(savedOrders));
+  renderSavedOrders();
+}
+
+// ─────────────────────────────────────────
+//  UTILS
+// ─────────────────────────────────────────
+function clearForm() {
+  ['fPedidoNum','fPedidoPO','fCliente','fDataPedido','fDataEntrega','fNfPrefixo','fTransNome'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('fTransPct').value = 0;
+  document.getElementById('fTransVol').value = '';
+  document.getElementById('fStatus').value = '2';
+  document.getElementById('produtosBody').innerHTML = '';
+  updatePreview();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// ─────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────
+addProdutoRow('', '', '', 100);
+updatePreview();
+</script>
+</body>
+</html>
