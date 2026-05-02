@@ -850,8 +850,9 @@ async function publishToGitHub() {
     log(`URL: ${pagesUrl}`, 'ok');
 
     // Save / update in history — store all fields for re-editing
+    const newId = editingId || Date.now();
     const order = {
-      id: editingId || Date.now(),
+      id: newId,
       num, po:gv('fPO'), cliente:gv('fCliente'),
       dataPed:gv('fDataPed'), dataEnt:gv('fDataEnt'),
       status:parseInt(gv('fStatus')),
@@ -863,12 +864,18 @@ async function publishToGitHub() {
       html
     };
     let orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
-    const idx = orders.findIndex(o => o.id === order.id || o.num === num);
-    if (idx >= 0) orders[idx] = order; else orders.unshift(order);
+    // Se editingId está definido, atualiza APENAS aquele registro pelo id exato.
+    // Se for novo pedido (editingId = null), sempre insere como novo — nunca sobrescreve pelo número.
+    if (editingId) {
+      const idx = orders.findIndex(o => o.id === editingId);
+      if (idx >= 0) orders[idx] = order; else orders.unshift(order);
+    } else {
+      orders.unshift(order);
+    }
     localStorage.setItem('sk_orders', JSON.stringify(orders.slice(0,50)));
     updateSideCount();
 
-    editingId = order.id; // stay in edit mode after publish
+    editingId = newId; // após publicar, entra em modo edição para o pedido atual
     document.getElementById('editBannerLabel').textContent = `Pedido #${num}${order.po?' / '+order.po:''}`;
     document.getElementById('editBanner').style.display = '';
 
