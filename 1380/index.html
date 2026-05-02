@@ -647,8 +647,8 @@
     <div>
       <div class="order-number" id="orderNumber">Pedido #1380 / ISCPPO00043591</div>
       <div class="order-sub">
-        Cliente: <strong id="clientName">ISCP - SOCIEDADE EDUCACIONAL LTDA.</strong> &nbsp;·&nbsp;
-        Data: <strong id="orderDate">22/04/2025</strong>
+        Cliente: <strong id="clientName">ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94</strong> &nbsp;·&nbsp;
+        Data: <strong id="orderDate">22/04/2026 / 31/05/2026</strong>
       </div>
     </div>
   </div>
@@ -697,7 +697,7 @@
             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
           </svg>
         </div>
-        <div class="card-title">Produtos Disponíveis</div>
+        <div class="card-title">Produtos</div>
       </div>
       <div class="card-body">
         <div class="product-list" id="productList">
@@ -725,7 +725,7 @@
           <div class="nf-prefixo" id="nfPrefixo">
             <strong>Dados pré-definidos:</strong><br>
             Produtos de uso médico-hospitalar. CFOP 6102.
-            Local de entrega: AV RIO DAS PEDRAS, 1601 PIRACICAMIRIM 13425-380 BRASIL PIRACICABA-SP - lotes . Temperatura de armazenagem: 15°C a 25°C.
+            Local de entrega: AV RIO DAS PEDRAS, 1601 PIRACICAMIRIM 13425-380 BRASIL PIRACICABA-SP / Ordem de Compra Nº ISCPPO00043591 - lotes . Temperatura de armazenagem: 15°C a 25°C.
           </div>
           <div class="nf-label">Adicionar observação complementar</div>
           <textarea class="nf-textarea" id="nfObs" placeholder="Digite aqui qualquer observação adicional que deseja incluir na nota fiscal…"></textarea>
@@ -812,7 +812,7 @@
       </div>
       <div class="admin-field">
         <label>Data</label>
-        <input type="text" id="adminDate" value="28/04/2025" oninput="updateMeta()">
+        <input type="text" id="adminDate" value="28/04/2026" oninput="updateMeta()">
       </div>
     </div>
 
@@ -879,8 +879,8 @@ Local de entrega: lote. Temperatura de armazenagem: 15°C a 25°C.</textarea>
 const state = {
   status: 2,
   products: [
-    { name: "Venoscópio Localizador de Veias AMA QV-600", desc: "importação", qty: "10%", pct: 8 },
-    { name: "Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek", qty: "70%", pct: 70 },
+    { name: "Venoscópio Localizador de Veias AMA QV-600", desc: "Importação", qty: "Qt 8", pct: 8 },
+    { name: "Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek", desc: "Disponível", qty: "Qt 7/10", pct: 70 },
   ],
   transport: { name: "Transportadora Ltda.", vol: 12, pct: 0 }
 };
@@ -910,9 +910,11 @@ function renderProducts() {
             <div class="bar-wrap"><div class="bar-fill ${barClass}" style="width:${pct}%"></div></div>
           </div>
           <span class="product-qty">${p.qty}</span>
+          <!--
           <button onclick="removeProduct(${i})" style="background:none;border:none;cursor:pointer;color:#b0bac8;padding:4px;margin-left:2px;" title="Remover">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
+          -->
         </div>
         ${i < state.products.length-1 ? '<div class="product-divider" style="margin:12px 0;"></div>' : ''}
       </div>`;
