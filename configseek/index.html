@@ -208,7 +208,10 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
       Config. GitHub
     </button>
   </div>
-  <div class="sidebar-footer">configseek · v3.0<br>Seekmed © 2026</div>
+  <div class="sidebar-footer">
+    configseek · v4.0<br>Seekmed © 2026<br>
+    <span id="syncStatus" style="color:var(--text3);font-size:10px;">⏳ Sincronizando…</span>
+  </div>
 </nav>
 
 <!-- ═══════════════════ MAIN ═══════════════════ -->
@@ -371,7 +374,13 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
       <div class="card">
         <div class="card-head">
           <div class="card-head-left"><div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="card-title">Pedidos Publicados</span></div>
-          <span style="font-size:12px;color:var(--text3);">Histórico neste navegador</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="btn btn-secondary btn-sm" onclick="syncFromGitHub(true)" id="btnSync">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg>
+              Sincronizar
+            </button>
+            <span style="font-size:12px;color:var(--text3);">Sincronizado com GitHub</span>
+          </div>
         </div>
         <div class="card-body">
           <div class="pedidos-list" id="pedidosList"></div>
@@ -874,6 +883,7 @@ async function publishToGitHub() {
     }
     localStorage.setItem('sk_orders', JSON.stringify(orders.slice(0,50)));
     updateSideCount();
+    await saveOrdersToGitHub(orders); // ← sincroniza pedidos.json no GitHub
 
     editingId = newId; // após publicar, entra em modo edição para o pedido atual
     document.getElementById('editBannerLabel').textContent = `Pedido #${num}${order.po?' / '+order.po:''}`;
@@ -891,6 +901,112 @@ async function publishToGitHub() {
 }
 
 // ══════════════════════════════════════════════
+//  GITHUB SYNC — pedidos.json
+//  Arquivo salvo em: configseek/pedidos.json
+//  Sem o campo `html` para manter o JSON enxuto
+// ══════════════════════════════════════════════
+const ORDERS_PATH = 'configseek/pedidos.json';
+
+function ordersWithoutHtml(orders) {
+  // Não salva o HTML no JSON (fica só nos pedidos individuais do repositório)
+  return orders.map(o => { const c = {...o}; delete c.html; return c; });
+}
+
+async function saveOrdersToGitHub(orders) {
+  const cfg = loadConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) return; // sem config, silencioso
+
+  const content = btoa(unescape(encodeURIComponent(
+    JSON.stringify(ordersWithoutHtml(orders), null, 2)
+  )));
+  const apiUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${ORDERS_PATH}`;
+  const headers = {
+    Authorization: `token ${cfg.token}`,
+    Accept: 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+
+  try {
+    let sha = null;
+    const check = await fetch(apiUrl, { headers });
+    if (check.ok) sha = (await check.json()).sha;
+
+    const body = {
+      message: `Atualiza pedidos.json · ${new Date().toLocaleString('pt-BR')}`,
+      content,
+      branch: cfg.branch || 'main'
+    };
+    if (sha) body.sha = sha;
+
+    await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify(body) });
+    setSyncStatus('✓ Sincronizado com GitHub', true);
+  } catch(e) {
+    setSyncStatus('⚠ Erro ao sincronizar', false);
+  }
+}
+
+async function syncFromGitHub(manual = false) {
+  const cfg = loadConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    setSyncStatus('⚠ Configure o GitHub', false);
+    return;
+  }
+
+  const btn = document.getElementById('btnSync');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner" style="border-top-color:var(--text2);border-color:var(--border2);"></div> Sincronizando…'; }
+  setSyncStatus('⏳ Sincronizando…');
+
+  try {
+    const apiUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${ORDERS_PATH}`;
+    const r = await fetch(apiUrl, {
+      headers: { Authorization: `token ${cfg.token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+
+    if (r.status === 404) {
+      // Arquivo ainda não existe — sem pedidos no GitHub ainda
+      setSyncStatus('✓ Nenhum pedido no GitHub ainda', true);
+      if (manual) showToast('Nenhum pedido encontrado no GitHub ainda.', 'info');
+      return;
+    }
+    if (!r.ok) throw new Error(r.status);
+
+    const data = await r.json();
+    const remoteOrders = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+
+    // Mescla: remoto tem prioridade, preserva campo `html` do local se existir
+    const localOrders = JSON.parse(localStorage.getItem('sk_orders') || '[]');
+    const localMap = Object.fromEntries(localOrders.map(o => [o.id, o]));
+
+    const merged = remoteOrders.map(o => ({
+      ...o,
+      html: localMap[o.id]?.html || null  // preserva html local se houver
+    }));
+
+    localStorage.setItem('sk_orders', JSON.stringify(merged));
+    updateSideCount();
+    renderSavedOrders();
+    setSyncStatus(`✓ Sincronizado · ${merged.length} pedido(s)`, true);
+    if (manual) showToast(`${merged.length} pedido(s) carregado(s) do GitHub.`, 'success');
+
+  } catch(e) {
+    setSyncStatus('⚠ Erro ao sincronizar', false);
+    if (manual) showToast('Erro ao buscar pedidos do GitHub.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg> Sincronizar`;
+    }
+  }
+}
+
+function setSyncStatus(msg, ok) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = ok === true ? 'var(--success)' : ok === false ? 'var(--warning)' : 'var(--text3)';
+}
+
+// ══════════════════════════════════════════════
 //  PEDIDOS LIST
 // ══════════════════════════════════════════════
 const sLbl = ['','Recebido','Em Preparação','Pronto','Em Trânsito','Entregue'];
@@ -900,7 +1016,7 @@ function renderSavedOrders() {
   const orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
   const el = document.getElementById('pedidosList');
   if (!orders.length) {
-    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:32px;">Nenhum pedido publicado ainda.</div>';
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:32px;">Nenhum pedido ainda. Clique em <strong>Sincronizar</strong> para buscar do GitHub.</div>';
     return;
   }
   el.innerHTML = orders.map(o => `
@@ -947,17 +1063,18 @@ function editOrder(id) {
 
 function reDownload(id) {
   const o = JSON.parse(localStorage.getItem('sk_orders')||'[]').find(x => x.id === id);
-  if (!o) return;
+  if (!o || !o.html) { showToast('HTML não disponível localmente. Edite e republique.', 'error'); return; }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([o.html],{type:'text/html'}));
   a.download = 'index.html'; a.click();
 }
 
-function deleteOrder(id) {
+async function deleteOrder(id) {
   if (!confirm('Remover do histórico? (O arquivo no GitHub não será deletado)')) return;
   let orders = JSON.parse(localStorage.getItem('sk_orders')||'[]');
   orders = orders.filter(x => x.id !== id);
   localStorage.setItem('sk_orders', JSON.stringify(orders));
+  await saveOrdersToGitHub(orders);
   renderSavedOrders();
   updateSideCount();
 }
@@ -1002,13 +1119,14 @@ function showToast(msg, type='success') {
 }
 
 // ══════════════════════════════════════════════
-//  INIT
+//  INIT — carrega pedidos do GitHub automaticamente
 // ══════════════════════════════════════════════
 addRow();
 updateGhBanner();
 updatePathPreview();
 refreshPreview();
 updateSideCount();
+syncFromGitHub(false); // silencioso no carregamento
 </script>
 </body>
 </html>
