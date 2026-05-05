@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1777730454389,
+    "num": "1387",
+    "po": "",
+    "cliente": "FORTALEZA COMERCIO E DISTRIBUIÇAO LTDA / 48.793.218/0001-77",
+    "dataPed": "28/04/2026",
+    "dataEnt": "14/05/2026",
+    "status": 2,
+    "nfPre": "",
+    "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
+    "transNome": "",
+    "transVol": "2",
+    "transPct": "0",
+    "pasta": "pedidos",
+    "path": "pedidos/1387/index.html",
+    "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/1387/",
+    "produtos": [
+      {
+        "name": "Braçadeira Para Injeção Pés Tubulares e Altura Regulável Haste e Apoio de Braço Inox 116-C - HELTER",
+        "desc": "Disponível",
+        "qty": "1",
+        "pct": 100
+      },
+      {
+        "name": "Mesa de Mayo para Instrumental Cir. Pintada c/ Altura regulável com bandeja inox Mod 195-C",
+        "desc": "Em processamento",
+        "qty": "1",
+        "pct": 20
+      }
+    ],
+    "publishedAt": "02/05/2026, 11:00:54"
+  },
+  {
+    "id": 1777730085236,
+    "num": "1380",
+    "po": "ISCPPO00043591",
+    "cliente": "ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94",
+    "dataPed": "22/04/2026",
+    "dataEnt": "31/05/2026",
+    "status": 2,
+    "nfPre": "Produtos de uso médico-hospitalar. CFOP 6102. Local de entrega: AV RIO DAS PEDRAS, 1601 PIRACICAMIRIM 13425-380 BRASIL PIRACICABA-SP / Ordem de Compra Nº ISCPPO00043591 - lotes . Temperatura de armazenagem: 15°C a 25°C.",
+    "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
+    "transNome": "",
+    "transVol": "12",
+    "transPct": "0",
+    "pasta": "pedidos",
+    "path": "pedidos/1380/index.html",
+    "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/1380/",
+    "produtos": [
+      {
+        "name": "Venoscópio Localizador de Veias AMA QV-600...",
+        "desc": "Importação",
+        "qty": "8",
+        "pct": 15
+      },
+      {
+        "name": "Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek",
+        "desc": "Disponível",
+        "qty": "7/10",
+        "pct": 70
+      }
+    ],
+    "publishedAt": "04/05/2026, 23:30:44"
+  },
+  {
+    "id": 1777728018262,
+    "num": "1384",
+    "po": "",
+    "cliente": "REAL SOCIEDADE PORTUGUESA DE BENEFICENCIA / 46.030.318/0001-16",
+    "dataPed": "27/04/2026",
+    "dataEnt": "18/05/2026",
+    "status": 2,
+    "nfPre": "Produtos de uso médico-hospitalar. CFOP 6102. ORDEM DE COMPRA: 165.426 SOLICITAÇÃO 249203 E 249226 CENTRO DE CUSTO 2 UN, CENTRO CIRURGICO 1 UN. PRONTO ATENDIMENTO Local de entrega: lotes:",
+    "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
+    "transNome": "",
+    "transVol": "3",
+    "transPct": "0",
+    "pasta": "pedidos",
+    "path": "pedidos/1384/index.html",
+    "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/1384/",
+    "produtos": [
+      {
+        "name": "Termômetro Digital Infravermelho Sem Contato - Premium",
+        "desc": "Aguardando entrada em estoque",
+        "qty": "3",
+        "pct": 40
+      }
+    ],
+    "publishedAt": "04/05/2026, 22:55:45"
+  }
+]
