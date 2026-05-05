@@ -100,7 +100,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
     <div>
       <div class="order-number">Pedido #1380 / ISCPPO00043591</div>
       <div class="order-sub">Cliente: <strong>ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94</strong> &nbsp;·&nbsp; <strong>22/04/2026 · Entrega: 31/05/2026</strong></div>
-      <div class="order-updated">Última atualização: 02/05/2026, 10:58:33</div>
+      <div class="order-updated">Última atualização: 04/05/2026, 23:30:43</div>
     </div>
   </div>
   <div class="card" style="margin-bottom:24px;">
@@ -157,7 +157,7 @@ const sm={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em
 const sv=2;
 for(let i=1;i<=5;i++){const e=document.getElementById("s"+i);e.className="step"+(i<sv?" done":i===sv?" active":"");const c=e.querySelector(".step-circle");c.innerHTML=i<sv?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':i;if(i<5)document.getElementById("l"+i).className="step-line"+(i<sv?" done":"");}
 const hb=document.getElementById("hBadge");hb.className="badge-status "+sm[sv].c;hb.innerHTML='<span class="dot"></span><span>'+sm[sv].l+'</span>';
-const pr=[{"name":"Venoscópio Localizador de Veias AMA QV-600...","desc":"Importação","qty":"8","pct":10},{"name":"Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek","desc":"Disponível","qty":"7/10","pct":70}];const pl=document.getElementById("productList");
+const pr=[{"name":"Venoscópio Localizador de Veias AMA QV-600...","desc":"Importação","qty":"8","pct":15},{"name":"Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek","desc":"Disponível","qty":"7/10","pct":70}];const pl=document.getElementById("productList");
 pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
 const tg=document.getElementById("tTag"),tp=0;
 tg.textContent=tp<10?"Aguardando":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
