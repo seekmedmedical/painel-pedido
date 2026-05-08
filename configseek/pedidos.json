@@ -70,7 +70,7 @@
     "cliente": "REAL SOCIEDADE PORTUGUESA DE BENEFICENCIA / 46.030.318/0001-16",
     "dataPed": "27/04/2026",
     "dataEnt": "18/05/2026",
-    "status": 2,
+    "status": 3,
     "nfPre": "Produtos de uso médico-hospitalar. CFOP 6102. ORDEM DE COMPRA: 165.426 SOLICITAÇÃO 249203 E 249226 CENTRO DE CUSTO 2 UN, CENTRO CIRURGICO 1 UN. PRONTO ATENDIMENTO Local de entrega: lotes:",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "",
@@ -84,9 +84,9 @@
         "name": "Termômetro Digital Infravermelho Sem Contato - Premium",
         "desc": "Aguardando entrada em estoque",
         "qty": "3",
-        "pct": 50
+        "pct": 100
       }
     ],
-    "publishedAt": "06/05/2026, 14:47:12"
+    "publishedAt": "08/05/2026, 14:18:26"
   }
 ]
