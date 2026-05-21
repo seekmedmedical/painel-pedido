@@ -50,9 +50,9 @@
     "produtos": [
       {
         "name": "Venoscópio Localizador de Veias AMA QV-600...",
-        "desc": "Desembaraço aduaneiro",
+        "desc": "Em Separação",
         "qty": "8",
-        "pct": 40
+        "pct": 80
       },
       {
         "name": "Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek",
@@ -61,7 +61,7 @@
         "pct": 90
       }
     ],
-    "publishedAt": "20/05/2026, 09:39:21"
+    "publishedAt": "21/05/2026, 13:56:11"
   },
   {
     "id": 1777728018262,
