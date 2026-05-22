@@ -38,7 +38,7 @@
     "cliente": "ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94",
     "dataPed": "22/04/2026",
     "dataEnt": "31/05/2026",
-    "status": 2,
+    "status": 3,
     "nfPre": "Produtos de uso médico-hospitalar. CFOP 6102. Local de entrega: AV RIO DAS PEDRAS, 1601 PIRACICAMIRIM 13425-380 BRASIL PIRACICABA-SP / Ordem de Compra Nº ISCPPO00043591 - lotes . Temperatura de armazenagem: 15°C a 25°C.",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "",
@@ -61,7 +61,7 @@
         "pct": 100
       }
     ],
-    "publishedAt": "21/05/2026, 16:18:08"
+    "publishedAt": "22/05/2026, 11:33:57"
   },
   {
     "id": 1777728018262,
