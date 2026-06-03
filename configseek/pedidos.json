@@ -68,7 +68,7 @@
     "nfPre": "Entrega: Santa Casa de Misericórdia de Piracicaba. Local de entrega: Rua Silva Jardim, 1740 (portão cinza). Bairro Alto - Piracicaba - SP. Horário entrega das 07h:30min as 17h no Almoxarifado Central. / Ordem de Compra Nº ISCPPO00043591 - lotes . Temperatura de armazenagem: 15°C a 25°C.",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42",
-    "transVol": "12",
+    "transVol": "8",
     "transPct": "0",
     "pasta": "pedidos",
     "path": "pedidos/1380/index.html",
@@ -87,7 +87,7 @@
         "pct": 100
       }
     ],
-    "publishedAt": "27/05/2026, 15:46:06"
+    "publishedAt": "03/06/2026, 11:13:46"
   },
   {
     "id": 1777728018262,
