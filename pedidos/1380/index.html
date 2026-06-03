@@ -100,7 +100,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
     <div>
       <div class="order-number">Pedido #1380 / ISCPPO00043591</div>
       <div class="order-sub">Cliente: <strong>ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94</strong> &nbsp;·&nbsp; <strong>22/04/2026 · Entrega: 31/05/2026</strong></div>
-      <div class="order-updated">Última atualização: 27/05/2026, 15:46:05</div>
+      <div class="order-updated">Última atualização: 03/06/2026, 11:13:44</div>
     </div>
   </div>
   <div class="card" style="margin-bottom:24px;">
@@ -142,7 +142,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
         <div class="card-body">
           <div class="transport-info">
             <div class="transport-avatar">JT</div>
-            <div><div class="transport-name">JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42</div><div class="transport-vol">12 volumes &nbsp;·&nbsp; <span class="tag blue" id="tTag">—</span></div></div>
+            <div><div class="transport-name">JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42</div><div class="transport-vol">8 volumes &nbsp;·&nbsp; <span class="tag blue" id="tTag">—</span></div></div>
           </div>
           <div class="transport-pct-header"><span>Progresso de entrega</span><span>0%</span></div>
           <div class="transport-bar"><div class="transport-bar-fill" style="width:0%"></div></div>
@@ -160,7 +160,7 @@ const hb=document.getElementById("hBadge");hb.className="badge-status "+sm[sv].c
 const pr=[{"name":"Venoscópio Localizador de Veias AMA QV-600...","desc":"Em Separação","qty":"8/8","pct":100},{"name":"Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek","desc":"Disponível","qty":"10/10","pct":100}];const pl=document.getElementById("productList");
 pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
 const tg=document.getElementById("tTag"),tp=0;
-tg.textContent=tp<10?"Aguardando liberação de coleta":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
+tg.textContent=tp<10?"Aguardando":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
 function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"1380 / ISCPPO00043591",cliente:"ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.textContent="✓ Enviado!";document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
 </script>
 </body></html>
