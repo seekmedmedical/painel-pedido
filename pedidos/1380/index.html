@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seekmed — Pedido 1380 / ISCPPO00043591</title>
-
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0SJEFLLXH6"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,7 +10,6 @@
   gtag('js', new Date());
   gtag('config', 'G-0SJEFLLXH6');
 </script>
-
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f6f9;--surface:#fff;--surface2:#f0f3f7;--border:#e2e7ef;--text:#1a2236;--text2:#5a6b85;--accent:#0057b7;--accent-light:#e8f0fb;--accent2:#00a3a3;--success:#00875a;--success-light:#e3f5ee;--warning:#e07b00;--warning-light:#fff4e0;--danger:#c0392b;--radius:14px;--shadow:0 2px 12px rgba(26,34,54,.07);}
@@ -30,6 +27,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 .badge-status.enviado{background:var(--accent-light);color:var(--accent);}
 .dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.8s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .container{max-width:1100px;margin:0 auto;padding:36px 24px 60px;}
 .grid{display:grid;gap:24px;}.grid-2{grid-template-columns:1fr 1fr;}
 @media(max-width:760px){.grid-2{grid-template-columns:1fr}header{padding:0 20px}.container{padding:24px 16px 60px}}
@@ -151,6 +149,31 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
       </div>
     </div>
   </div>
+
+  <!-- CARD DOCUMENTOS — largura total abaixo do grid -->
+  <div class="card" style="margin-top:24px;">
+    <div class="card-header">
+      <div class="card-header-icon blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+          <polyline points="9 15 12 18 15 15"/>
+        </svg>
+      </div>
+      <div class="card-title">Documentos do Pedido</div>
+      <span id="docCount" style="margin-left:auto;background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">carregando...</span>
+    </div>
+    <div class="card-body">
+      <div id="docLoading" style="display:flex;align-items:center;gap:10px;color:var(--text2);font-size:13px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        Buscando arquivos…
+      </div>
+      <div id="docEmpty" style="display:none;text-align:center;padding:20px 0;color:var(--text2);font-size:13px;">Nenhum documento disponível ainda.</div>
+      <div id="docList" style="display:none;flex-direction:column;gap:10px;"></div>
+    </div>
+  </div>
+
 </div>
 <script>
 const sm={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
@@ -161,6 +184,40 @@ const pr=[{"name":"Venoscópio Localizador de Veias AMA QV-600...","desc":"Em Se
 pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
 const tg=document.getElementById("tTag"),tp=0;
 tg.textContent=tp<10?"COLETA AGENDADA":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
+(async function loadDocs(){
+  const REPO="seekmedmedical/painel-pedido",FOLDER="pedidos/1380",TOKEN="";
+  try{
+    const h={"Accept":"application/vnd.github.v3+json"};
+    if(TOKEN)h["Authorization"]="token "+TOKEN;
+    const r=await fetch("https://api.github.com/repos/"+REPO+"/contents/"+FOLDER,{headers:h});
+    if(!r.ok)throw new Error();
+    const allowed=["pdf","xml","xlsx","xls","zip","docx"];
+    const files=(await r.json()).filter(f=>f.type==="file"&&allowed.includes(f.name.split(".").pop().toLowerCase()));
+    document.getElementById("docCount").textContent=files.length+" arquivo"+(files.length!==1?"s":"");
+    document.getElementById("docLoading").style.display="none";
+    if(!files.length){document.getElementById("docEmpty").style.display="block";return;}
+    const extColor={pdf:{c:"#c0392b",bg:"#fdecea"},xml:{c:"#e07b00",bg:"#fff4e0"},xlsx:{c:"#00875a",bg:"#e3f5ee"},zip:{c:"#5a6b85",bg:"#f0f3f7"}};
+    const getLabel=n=>{const l=n.toLowerCase();if(l.includes("carta")&&l.includes("corre"))return"Carta de Correção";if(l.includes("pack")||l.includes("packing"))return"Packing List";if(l.includes("dacte")||l.includes("cte"))return"DACTE";if(l.includes("boleto")||l.includes("bol"))return"Boleto";if(l.includes("laudo"))return"Laudo";if(l.includes("nota")||l.includes("nfe")||l.includes("nf-e"))return"Nota Fiscal";if(/^\d{40,}/.test(n))return"Nota Fiscal (NF-e)";return n.replace(/[-_]/g," ").replace(/\.[^.]+$/,"");};
+    const list=document.getElementById("docList");list.style.display="flex";
+    files.forEach((f,i)=>{
+      const ext=f.name.split(".").pop().toLowerCase();
+      const col=extColor[ext]||{c:"#0057b7",bg:"#e8f0fb"};
+      const sz=f.size<1048576?(f.size/1024).toFixed(0)+" KB":(f.size/1048576).toFixed(1)+" MB";
+      const d=document.createElement("div");
+      d.style.cssText="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:#fafbfc;cursor:pointer;transition:background .15s;";
+      d.onmouseenter=()=>{d.style.background="#f0f3f7";};
+      d.onmouseleave=()=>{d.style.background="#fafbfc";};
+      d.onclick=()=>window.open(f.download_url,"_blank");
+      d.innerHTML='<div style="width:38px;height:38px;border-radius:8px;background:'+col.bg+';color:'+col.c+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:\'DM Mono\',monospace;flex-shrink:0;">'+ext.toUpperCase()+'</div><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;color:var(--text);">'+getLabel(f.name)+'</div><div style="font-size:11px;color:var(--text2);margin-top:2px;font-family:\'DM Mono\',monospace;">'+f.name+' · '+sz+'</div></div><div style="color:var(--accent);font-size:12px;font-weight:500;flex-shrink:0;display:flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Baixar</div>';
+      list.appendChild(d);
+      if(i<files.length-1){const dv=document.createElement("div");dv.style.cssText="height:1px;background:var(--border);margin:4px 0;";list.appendChild(dv);}
+    });
+  }catch(e){
+    document.getElementById("docLoading").style.display="none";
+    document.getElementById("docCount").textContent="—";
+    document.getElementById("docEmpty").style.display="block";
+  }
+})();
 function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"1380 / ISCPPO00043591",cliente:"ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.textContent="✓ Enviado!";document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
 </script>
 </body></html>
