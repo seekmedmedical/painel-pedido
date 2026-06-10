@@ -757,18 +757,18 @@
             <div>
               <div class="transport-name" id="transportName">Transportadora Rápida Ltda.</div>
               <div class="transport-vol">
-                <span id="transportVol">4 volumes</span> &nbsp;·&nbsp;
-                <span class="tag blue" id="transportTag">Em trânsito</span>
+                <span id="transportVol">8 volumes</span> &nbsp;·&nbsp;
+                <span class="tag blue" id="transportTag">Coletado</span>
               </div>
             </div>
           </div>
           <div class="transport-pct-wrap">
             <div class="transport-pct-header">
               <span>Progresso de entrega</span>
-              <span id="transportPctLabel">65%</span>
+              <span id="transportPctLabel">20%</span>
             </div>
             <div class="transport-bar">
-              <div class="transport-bar-fill" id="transportBar" style="width:65%"></div>
+              <div class="transport-bar-fill" id="transportBar" style="width:20%"></div>
             </div>
             <div class="transport-stages">
               <span>Coletado</span>
@@ -821,9 +821,9 @@
       <label>Status do Pedido</label>
       <select id="adminStatus" onchange="updateStatus()">
         <option value="1">1 — Pedido Recebido</option>
-        <option value="2" selected>2 — Em Preparação</option>
+        <option value="2">2 — Em Preparação</option>
         <option value="3">3 — Pronto para Envio</option>
-        <option value="4">4 — Em Trânsito</option>
+        <option value="4" selected>4 — Em Trânsito</option>
         <option value="5">5 — Entregue</option>
       </select>
     </div>
@@ -836,11 +836,11 @@
     <div class="admin-row">
       <div class="admin-field">
         <label>Volumes</label>
-        <input type="number" id="adminTransportVol" value="4" oninput="updateTransport()">
+        <input type="number" id="adminTransportVol" value="8" oninput="updateTransport()">
       </div>
       <div class="admin-field">
         <label>Progresso (%)</label>
-        <input type="number" id="adminTransportPct" value="65" min="0" max="100" oninput="updateTransport()">
+        <input type="number" id="adminTransportPct" value="20" min="0" max="100" oninput="updateTransport()">
       </div>
     </div>
 
@@ -877,12 +877,12 @@ Local de entrega: lote. Temperatura de armazenagem: 15°C a 25°C.</textarea>
 <script>
 // ── STATE ──
 const state = {
-  status: 2,
+  status: 4,
   products: [
     { name: "Venoscópio Localizador de Veias AMA QV-600", desc: "Disponível", qty: "Qt 8", pct: 8 },
     { name: "Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek", desc: "Disponível", qty: "Qt 7/10", pct: 100 },
   ],
-  transport: { name: "Transportadora Ltda.", vol: 8, pct: 0 }
+  transport: { name: "Transportadora Rápida Ltda.", vol: 8, pct: 20 }
 };
 
 const statusMap = {
@@ -974,7 +974,7 @@ function renderTransport() {
   document.getElementById("transportBar").style.width = t.pct + "%";
   document.getElementById("transportPctLabel").textContent = t.pct + "%";
   const tag = document.getElementById("transportTag");
-  if (t.pct < 10) tag.textContent = "Coletado";
+  if (t.pct <= 20) tag.textContent = "Coletado";
   else if (t.pct < 50) tag.textContent = "Em rota";
   else if (t.pct < 90) tag.textContent = "Em trânsito";
   else if (t.pct < 100) tag.textContent = "Chegando";
@@ -1016,7 +1016,6 @@ function sendNfObs() {
   const btn = document.querySelector(".nf-send-btn");
   btn.disabled = true;
 
-  // Envio para o seu Webhook do Make.com
   fetch('https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1029,7 +1028,6 @@ function sendNfObs() {
   })
   .then(response => {
     if (response.ok) {
-      // Feedback visual de sucesso
       btn.style.background = "var(--success)";
       btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Enviado!`;
       document.getElementById("nfSentMsg").style.display = "flex";
