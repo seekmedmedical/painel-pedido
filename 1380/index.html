@@ -974,7 +974,7 @@ function renderTransport() {
   document.getElementById("transportBar").style.width = t.pct + "%";
   document.getElementById("transportPctLabel").textContent = t.pct + "%";
   const tag = document.getElementById("transportTag");
-  if (t.pct < 10) tag.textContent = "Aguardando coleta";
+  if (t.pct < 10) tag.textContent = "Coletado";
   else if (t.pct < 50) tag.textContent = "Em rota";
   else if (t.pct < 90) tag.textContent = "Em trânsito";
   else if (t.pct < 100) tag.textContent = "Chegando";
