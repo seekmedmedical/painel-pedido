@@ -142,8 +142,8 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
             <div class="transport-avatar">JT</div>
             <div><div class="transport-name">JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42</div><div class="transport-vol">8 volumes &nbsp;·&nbsp; <span class="tag blue" id="tTag">—</span></div></div>
           </div>
-          <div class="transport-pct-header"><span>Progresso de entrega</span><span>45%</span></div>
-          <div class="transport-bar"><div class="transport-bar-fill" style="width:45%"></div></div>
+          <div class="transport-pct-header"><span>Progresso de entrega</span><span>100%</span></div>
+          <div class="transport-bar"><div class="transport-bar-fill" style="width:100%"></div></div>
           <div class="transport-stages"><span>Coletado</span><span>Em rota</span><span>Chegando</span><span>Entregue</span></div>
         </div>
       </div>
@@ -177,7 +177,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 </div>
 <script>
 const sm={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
-const sv=4;
+const sv=5;
 for(let i=1;i<=5;i++){const e=document.getElementById("s"+i);e.className="step"+(i<sv?" done":i===sv?" active":"");const c=e.querySelector(".step-circle");c.innerHTML=i<sv?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':i;if(i<5)document.getElementById("l"+i).className="step-line"+(i<sv?" done":"");}
 const hb=document.getElementById("hBadge");hb.className="badge-status "+sm[sv].c;hb.innerHTML='<span class="dot"></span><span>'+sm[sv].l+'</span>';
 const pr=[{"name":"Venoscópio Localizador de Veias AMA QV-600...","desc":"Em Separação","qty":"8/8","pct":100},{"name":"Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek","desc":"Disponível","qty":"10/10","pct":100}];const pl=document.getElementById("productList");
