@@ -152,7 +152,6 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
 <body>
 <div class="layout">
 
-<!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">
@@ -176,12 +175,11 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
     </button>
   </div>
   <div class="sidebar-footer">
-    configseek · v4.1<br>Seekmed © 2026<br>
+    configseek · v4.2<br>Seekmed © 2026<br>
     <span id="syncStatus" style="color:var(--text3);font-size:10px;">⏳ Sincronizando…</span>
   </div>
 </nav>
 
-<!-- MAIN -->
 <div class="main">
   <div class="topbar">
     <div class="topbar-left">
@@ -208,7 +206,7 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
 
   <div class="content">
 
-    <!-- TAB: NOVO / EDITAR -->
+    <!-- TAB NOVO / EDITAR -->
     <div id="tabNovo">
       <div class="edit-banner" id="editBanner" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -266,20 +264,27 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
           <div class="card">
             <div class="card-head"><div class="card-head-left"><div class="card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="card-title">Transporte</span></div></div>
             <div class="card-body">
-              <div class="field"><label>Transportadora</label><input type="text" id="fTransNome" placeholder="Ex: Transportadora Rápida Ltda." oninput="onFormChange()"></div>
-              <div class="field"><label>Status da Transportadora</label>
+              <div class="field"><label>Transportadora</label><input type="text" id="fTransNome" placeholder="Ex: JCARGAS TRANSPORTES LTDA" oninput="onFormChange()"></div>
+              <div class="field"><label>Volumes</label><input type="number" id="fTransVol" placeholder="8" min="0" oninput="onFormChange()"></div>
+              <div class="field">
+                <label>Status da Transportadora</label>
+                <!-- ★ Opções sincronizadas com a lógica do front:
+                     0=Aguardando, 20=Coletado, 50=Em rota, 75=Em trânsito, 90=Chegando, 100=Entregue -->
                 <select id="fTransStatus" onchange="onTransStatusChange()">
-                  <option value="0">Aguardando coleta</option>
-                  <option value="25">Coletado</option>
-                  <option value="50">Em rota</option>
-                  <option value="75">Em trânsito</option>
-                  <option value="90">Chegando</option>
-                  <option value="100">Entregue</option>
+                  <option value="0">Aguardando coleta (0%)</option>
+                  <option value="20">Coletado (20%)</option>
+                  <option value="50">Em rota (50%)</option>
+                  <option value="75">Em trânsito (75%)</option>
+                  <option value="90">Chegando (90%)</option>
+                  <option value="100">Entregue (100%)</option>
                 </select>
               </div>
-              <div class="field-row">
-                <div class="field"><label>Volumes</label><input type="number" id="fTransVol" placeholder="4" min="0" oninput="onFormChange()"></div>
-                <div class="field"><label>Progresso (%)</label><input type="number" id="fTransPct" value="0" min="0" max="100" oninput="onFormChange()"><div class="field-hint">Ajuste fino opcional.</div></div>
+              <div class="field">
+                <label>Progresso % (ajuste fino)</label>
+                <input type="number" id="fTransPct" value="0" min="0" max="100" oninput="syncTransSelect()">
+                <div class="field-hint">
+                  0 = Aguardando · ≤20 = Coletado · &lt;50 = Em rota · &lt;90 = Em trânsito · &lt;100 = Chegando · 100 = Entregue
+                </div>
               </div>
             </div>
           </div>
@@ -301,22 +306,20 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
             </div>
           </div>
 
-          <!-- ★ CARD DOCUMENTOS — NOVO ★ -->
           <div class="card">
             <div class="card-head"><div class="card-head-left"><div class="card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><polyline points="9 15 12 18 15 15"/></svg></div><span class="card-title">Documentos (Downloads)</span></div></div>
             <div class="card-body">
               <div class="field">
                 <label>Pasta dos arquivos no repositório</label>
                 <input type="text" id="fDocFolder" placeholder="pedidos/1380" oninput="onFormChange()">
-                <div class="field-hint">Pasta onde estão os PDFs, XMLs etc. Ex: <code style="color:var(--accent)">pedidos/1380</code> — preenchido automaticamente ao digitar o número do pedido.</div>
+                <div class="field-hint">Ex: <code style="color:var(--accent)">pedidos/1380</code> — preenchido automaticamente ao digitar o número do pedido.</div>
               </div>
               <div style="font-size:12px;color:var(--text3);margin-top:6px;">
-                A seção de downloads aparecerá automaticamente na página do pedido, listando todos os arquivos desta pasta (exceto <code>index.html</code>).
+                A seção de downloads aparecerá automaticamente na página do pedido, listando todos os arquivos desta pasta (PDF, XML, XLSX, ZIP, DOCX).
               </div>
             </div>
           </div>
 
-          <!-- PUBLICAR -->
           <div class="card">
             <div class="card-head"><div class="card-head-left"><div class="card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><span class="card-title">Publicar</span></div></div>
             <div class="card-body">
@@ -340,7 +343,6 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
             </div>
           </div>
 
-          <!-- PREVIEW -->
           <div class="card">
             <div class="card-head">
               <div class="card-head-left"><div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><span class="card-title">Pré-visualização</span></div>
@@ -358,7 +360,7 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
       </div>
     </div>
 
-    <!-- TAB: PEDIDOS -->
+    <!-- TAB PEDIDOS -->
     <div id="tabPedidos" style="display:none;">
       <div class="card">
         <div class="card-head">
@@ -377,7 +379,7 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
       </div>
     </div>
 
-    <!-- TAB: CONFIG -->
+    <!-- TAB CONFIG -->
     <div id="tabConfig" style="display:none;">
       <div style="max-width:540px;">
         <div class="card">
@@ -394,7 +396,7 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
-              <div class="field-hint">Crie em: <a href="https://github.com/settings/tokens/new?scopes=repo&description=Seekmed+Backoffice" target="_blank" style="color:var(--accent)">github.com/settings/tokens</a> · marque <strong>repo</strong>. Salvo apenas neste navegador.</div>
+              <div class="field-hint">Crie em: <a href="https://github.com/settings/tokens/new?scopes=repo&description=Seekmed+Backoffice" target="_blank" style="color:var(--accent)">github.com/settings/tokens</a> · marque <strong>repo</strong>. Salvo apenas neste navegador (localStorage).</div>
             </div>
             <div class="sep"></div>
             <div style="display:flex;gap:8px;">
@@ -417,7 +419,6 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
 </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toastMsg"></span>
@@ -425,13 +426,9 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
 
 <script>
 // ══════════════════════════════════════════════
-//  STATE
+//  CONFIG GITHUB
 // ══════════════════════════════════════════════
 let editingId = null;
-
-// ══════════════════════════════════════════════
-//  CONFIG
-// ══════════════════════════════════════════════
 const cfgKeys = { owner:'sk_gh_owner', repo:'sk_gh_repo', branch:'sk_gh_branch', token:'sk_gh_token' };
 function loadConfig() {
   return Object.fromEntries(Object.entries(cfgKeys).map(([k,v]) => [k, localStorage.getItem(v)||'']));
@@ -504,10 +501,10 @@ function addRow(name='', desc='', qty='', pct=100) {
   tr.className = 'produto-row'; tr.dataset.id = id;
   tr.innerHTML = `
     <td>
-      <input type="text" placeholder="Nome do produto" value="${x(name)}" style="margin-bottom:4px;" oninput="onFormChange()">
-      <input type="text" placeholder="Descrição / lote / obs" value="${x(desc)}" style="font-size:12px;" oninput="onFormChange()">
+      <input type="text" placeholder="Nome do produto" value="${xe(name)}" style="margin-bottom:4px;" oninput="onFormChange()">
+      <input type="text" placeholder="Descrição / lote / obs" value="${xe(desc)}" style="font-size:12px;" oninput="onFormChange()">
     </td>
-    <td class="td-qty"><input type="text" placeholder="Qt 10 / 80%" value="${x(qty)}" oninput="onFormChange()"></td>
+    <td class="td-qty"><input type="text" placeholder="Qt 10 / 80%" value="${xe(qty)}" oninput="onFormChange()"></td>
     <td class="td-pct"><input type="number" min="0" max="100" value="${pct}" oninput="onFormChange()"></td>
     <td class="td-del">
       <button class="del-btn" onclick="this.closest('tr').remove();onFormChange()">
@@ -517,7 +514,7 @@ function addRow(name='', desc='', qty='', pct=100) {
   document.getElementById('produtosBody').appendChild(tr);
   onFormChange();
 }
-function x(s) { return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function xe(s) { return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 function getProdutos() {
   return Array.from(document.querySelectorAll('.produto-row')).map(r => {
     const i = r.querySelectorAll('input');
@@ -529,32 +526,35 @@ function getProdutos() {
 //  FORM HELPERS
 // ══════════════════════════════════════════════
 function gv(id) { return document.getElementById(id).value.trim(); }
-function sv(id, v) { document.getElementById(id).value = v||''; }
+function fv(id, v) { document.getElementById(id).value = v||''; }
 
+// Select de status da transportadora → atualiza o campo %
 function onTransStatusChange() {
-  const pct = document.getElementById('fTransStatus').value;
-  sv('fTransPct', pct);
+  fv('fTransPct', document.getElementById('fTransStatus').value);
+  onFormChange();
+}
+
+// Campo % manual → sincroniza o select com o valor mais próximo
+function syncTransSelect() {
+  const pct = parseInt(gv('fTransPct')) || 0;
+  // Limites: 0=Aguardando, 20=Coletado, 50=Em rota, 75=Em trânsito, 90=Chegando, 100=Entregue
+  const steps = [0,20,50,75,90,100];
+  const closest = steps.reduce((a,b) => Math.abs(b-pct)<Math.abs(a-pct)?b:a);
+  document.getElementById('fTransStatus').value = closest;
   onFormChange();
 }
 
 function onFormChange() {
-  // Auto-preenche pasta de docs quando número do pedido é digitado
-  const num = gv('fNum');
+  const num   = gv('fNum');
   const pasta = gv('fPasta') || 'pedidos';
   if (num && !document.getElementById('fDocFolder')._manualEdit) {
-    sv('fDocFolder', `${pasta}/${num}`);
+    fv('fDocFolder', `${pasta}/${num}`);
   }
-  // Sincroniza select de status da transportadora com o % atual
-  const pct = parseInt(gv('fTransPct')) || 0;
-  const steps = [0,25,50,75,90,100];
-  const closest = steps.reduce((a,b) => Math.abs(b-pct)<Math.abs(a-pct)?b:a);
-  document.getElementById('fTransStatus').value = closest;
   updatePathPreview();
   clearTimeout(window._pt);
   window._pt = setTimeout(refreshPreview, 700);
 }
 
-// Marca edição manual do campo de docs
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fDocFolder').addEventListener('input', function() {
     this._manualEdit = true;
@@ -574,29 +574,26 @@ function updatePathPreview() {
 }
 
 // ══════════════════════════════════════════════
-//  LOAD ORDER INTO FORM (EDIT MODE)
+//  CARREGAR PEDIDO NO FORM (MODO EDIÇÃO)
 // ══════════════════════════════════════════════
 function loadOrderIntoForm(o) {
   editingId = o.id;
-  sv('fNum',        o.num);
-  sv('fPO',         o.po);
-  sv('fCliente',    o.cliente);
-  sv('fDataPed',    o.dataPed);
-  sv('fDataEnt',    o.dataEnt || '');
-  sv('fStatus',     o.status);
-  sv('fNfPre',      o.nfPre || '');
-  sv('fWebhook',    o.webhook || 'https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg');
-  sv('fTransNome',  o.transNome || '');
-  sv('fTransVol',   o.transVol || '');
-  sv('fTransPct',   o.transPct || 0);
-  // Sincroniza select
-  const _pct = parseInt(o.transPct)||0;
-  const _steps=[0,25,50,75,90,100];
-  document.getElementById('fTransStatus').value = _steps.reduce((a,b)=>Math.abs(b-_pct)<Math.abs(a-_pct)?b:a);
-  sv('fPasta',      o.pasta || 'pedidos');
-  // Pasta docs: usa salvo, ou monta automaticamente
+  fv('fNum',        o.num);
+  fv('fPO',         o.po);
+  fv('fCliente',    o.cliente);
+  fv('fDataPed',    o.dataPed);
+  fv('fDataEnt',    o.dataEnt || '');
+  fv('fStatus',     o.status);
+  fv('fNfPre',      o.nfPre || '');
+  fv('fWebhook',    o.webhook || 'https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg');
+  fv('fTransNome',  o.transNome || '');
+  fv('fTransVol',   o.transVol || '');
+  fv('fTransPct',   o.transPct || 0);
+  // Sincroniza select com o % salvo
+  syncTransSelect();
+  fv('fPasta',      o.pasta || 'pedidos');
   const docFolder = o.docFolder || `${o.pasta||'pedidos'}/${o.num}`;
-  sv('fDocFolder', docFolder);
+  fv('fDocFolder', docFolder);
   document.getElementById('fDocFolder')._manualEdit = !!o.docFolder;
 
   document.getElementById('produtosBody').innerHTML = '';
@@ -616,7 +613,7 @@ function loadOrderIntoForm(o) {
 }
 
 // ══════════════════════════════════════════════
-//  HTML BUILDER — com fixes de steps e docs
+//  BUILD HTML — gerador do front sincronizado
 // ══════════════════════════════════════════════
 function buildHtml() {
   const num       = gv('fNum');
@@ -641,6 +638,10 @@ function buildHtml() {
   const nfHtml     = nfPre.replace(/\n/g,'<br>');
   const prodJson   = JSON.stringify(prods).replace(/<\/script>/gi,'<\\/script>');
   const now        = new Date().toLocaleString('pt-BR');
+
+  // ★ Lógica da tag de transporte — idêntica ao front
+  // tp<=0 → Aguardando · tp<=20 → Coletado · tp<50 → Em rota · tp<90 → Em trânsito · tp<100 → Chegando · tp===100 → Entregue
+  const tTag = tPct<=0?"Aguardando":tPct<=20?"Coletado":tPct<50?"Em rota":tPct<90?"Em trânsito":tPct<100?"Chegando":"Entregue";
 
   return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -691,13 +692,11 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 .step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text2);z-index:1;transition:all .3s;}
 .step.done .step-circle{background:var(--accent);border-color:var(--accent);color:#fff;}
 .step.active .step-circle{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 5px var(--accent-light);}
-.step.next .step-circle{border-color:var(--accent);color:var(--accent);}
 .step-label{font-size:11px;color:var(--text2);margin-top:8px;text-align:center;white-space:nowrap;}
 .step.done .step-label,.step.active .step-label{color:var(--accent);font-weight:500;}
-.step.next .step-label{color:var(--accent);font-weight:500;opacity:.7;}
 .step-line{flex:1;height:2px;background:var(--border);margin-bottom:20px;position:relative;overflow:hidden;}
 .step-line.done::after{content:'';position:absolute;inset:0;background:var(--accent);}
-.step-line.active::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--accent) 50%,transparent 100%);}
+.step-line.active::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--accent) 60%,transparent 100%);}
 .product-list{display:flex;flex-direction:column;gap:16px;}
 .product-item{display:flex;align-items:center;gap:16px;}
 .product-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);width:20px;flex-shrink:0;text-align:right;}
@@ -785,7 +784,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
         <div class="card-body">
           <div class="transport-info">
             <div class="transport-avatar">${tInitials}</div>
-            <div><div class="transport-name">${tNome||'—'}</div><div class="transport-vol">${tVol} volume${tVol!==1?'s':''} &nbsp;·&nbsp; <span class="tag blue" id="tTag">—</span></div></div>
+            <div><div class="transport-name">${tNome||'—'}</div><div class="transport-vol">${tVol} volume${tVol!==1?'s':''} &nbsp;·&nbsp; <span class="tag blue">${tTag}</span></div></div>
           </div>
           <div class="transport-pct-header"><span>Progresso de entrega</span><span>${tPct}%</span></div>
           <div class="transport-bar"><div class="transport-bar-fill" style="width:${tPct}%"></div></div>
@@ -794,8 +793,6 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
       </div>
     </div>
   </div>
-
-  <!-- CARD DOCUMENTOS -->
   <div class="card" style="margin-top:24px;">
     <div class="card-header">
       <div class="card-header-icon blue">
@@ -818,36 +815,32 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
       <div id="docList" style="display:none;flex-direction:column;gap:10px;"></div>
     </div>
   </div>
-
 </div>
 <script>
-// ★ FIX STEPS: active = preenchido + glow; next = borda colorida
-const sm={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
+// ── STEPS ────────────────────────────────────────────────────────────────
+// done=concluído(✓ sólido) · active=etapa atual(✓ sólido + glow) · sem classe=futuro
+const STATUS_MAP={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
 const sv=${status};
 for(let i=1;i<=5;i++){
   const e=document.getElementById("s"+i);
-  e.className="step"+(i<sv?" done":i===sv?" active":i===sv+1?" next":"");
+  e.className="step"+(i<sv?" done":i===sv?" active":"");
   const c=e.querySelector(".step-circle");
-  c.innerHTML=i<sv?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':i;
-  if(i<5){
-    const l=document.getElementById("l"+i);
-    l.className="step-line"+(i<sv?" done":i===sv?" active":"");
-  }
+  c.innerHTML=i<=sv?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':i;
+  if(i<5){const l=document.getElementById("l"+i);l.className="step-line"+(i<sv?" done":i===sv?" active":"");}
 }
-const hb=document.getElementById("hBadge");hb.className="badge-status "+sm[sv].c;hb.innerHTML='<span class="dot"></span><span>'+sm[sv].l+'</span>';
+const hb=document.getElementById("hBadge");hb.className="badge-status "+STATUS_MAP[sv].c;hb.innerHTML='<span class="dot"></span><span>'+STATUS_MAP[sv].l+'</span>';
 
-// Produtos
+// ── PRODUTOS ─────────────────────────────────────────────────────────────
 const pr=${prodJson};const pl=document.getElementById("productList");
 pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
 
-// Transporte
-const tg=document.getElementById("tTag"),tp=${tPct};
-tg.textContent=tp<10?"Aguardando":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
+// ── TRANSPORTE — tag já injetada no HTML pelo backoffice ─────────────────
+// (a tag e a barra são HTML estático gerado em buildHtml; nenhum JS necessário aqui)
 
-// Observação NF
-function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("${webhook}",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"${orderLabel}",cliente:"${cliente}",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.textContent="✓ Enviado!";document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
+// ── ENVIO OBS NF ─────────────────────────────────────────────────────────
+function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("${webhook}",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"${orderLabel}",cliente:"${cliente}",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Enviado!';document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
 
-// ★ DOCUMENTOS — lista arquivos da pasta do pedido no GitHub
+// ── DOCUMENTOS ───────────────────────────────────────────────────────────
 (async function loadDocs(){
   const REPO="${ghRepo}",FOLDER="${docFolder}",TOKEN="";
   try{
@@ -869,8 +862,7 @@ function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)r
       const sz=f.size<1048576?(f.size/1024).toFixed(0)+" KB":(f.size/1048576).toFixed(1)+" MB";
       const d=document.createElement("div");
       d.style.cssText="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:#fafbfc;cursor:pointer;transition:background .15s;";
-      d.onmouseenter=()=>{d.style.background="#f0f3f7";};
-      d.onmouseleave=()=>{d.style.background="#fafbfc";};
+      d.onmouseenter=()=>{d.style.background="#f0f3f7";};d.onmouseleave=()=>{d.style.background="#fafbfc";};
       d.onclick=()=>window.open(f.download_url,"_blank");
       d.innerHTML='<div style="width:38px;height:38px;border-radius:8px;background:'+col.bg+';color:'+col.c+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:monospace;flex-shrink:0;">'+ext.toUpperCase()+'</div><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;color:var(--text);">'+getLabel(f.name)+'</div><div style="font-size:11px;color:var(--text2);margin-top:2px;">'+f.name+' &nbsp;·&nbsp; '+sz+'</div></div><div style="color:var(--accent);font-size:12px;font-weight:500;flex-shrink:0;display:flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Baixar</div>';
       list.appendChild(d);
@@ -918,12 +910,12 @@ async function publishToGitHub() {
   const num = gv('fNum');
   if (!num) { showToast('Informe o número do pedido!','error'); return; }
 
-  const pasta   = gv('fPasta') || 'pedidos';
-  const path    = `${pasta}/${num}/index.html`;
-  const html    = buildHtml();
-  const base64  = btoa(unescape(encodeURIComponent(html)));
-  const apiUrl  = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
-  const headers = { Authorization:`token ${cfg.token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' };
+  const pasta  = gv('fPasta') || 'pedidos';
+  const path   = `${pasta}/${num}/index.html`;
+  const html   = buildHtml();
+  const base64 = btoa(unescape(encodeURIComponent(html)));
+  const apiUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+  const headers= { Authorization:`token ${cfg.token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' };
 
   const btn = document.getElementById('btnPublish');
   btn.disabled = true;
@@ -956,8 +948,7 @@ async function publishToGitHub() {
 
     const newId = editingId || Date.now();
     const order = {
-      id: newId,
-      num, po:gv('fPO'), cliente:gv('fCliente'),
+      id: newId, num, po:gv('fPO'), cliente:gv('fCliente'),
       dataPed:gv('fDataPed'), dataEnt:gv('fDataEnt'),
       status:parseInt(gv('fStatus')),
       nfPre:gv('fNfPre'), webhook:gv('fWebhook'),
@@ -1059,7 +1050,7 @@ function setSyncStatus(msg, ok) {
 }
 
 // ══════════════════════════════════════════════
-//  PEDIDOS LIST
+//  LISTA DE PEDIDOS
 // ══════════════════════════════════════════════
 const sLbl=['','Recebido','Em Preparação','Pronto','Em Trânsito','Entregue'];
 const sCls=['','status-prep','status-prep','status-pronto','status-transit','status-entregue'];
@@ -1150,8 +1141,8 @@ function downloadHtml() {
 
 function clearForm() {
   editingId = null;
-  ['fNum','fPO','fCliente','fDataPed','fDataEnt','fNfPre','fTransNome','fDocFolder'].forEach(id=>sv(id,''));
-  sv('fTransPct','0'); sv('fTransVol',''); sv('fStatus','2'); sv('fPasta','pedidos');
+  ['fNum','fPO','fCliente','fDataPed','fDataEnt','fNfPre','fTransNome','fDocFolder'].forEach(id=>fv(id,''));
+  fv('fTransPct','0'); fv('fTransVol',''); fv('fStatus','2'); fv('fPasta','pedidos');
   document.getElementById('fTransStatus').value = '0';
   document.getElementById('fDocFolder')._manualEdit = false;
   document.getElementById('produtosBody').innerHTML='';
