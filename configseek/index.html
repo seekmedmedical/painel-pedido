@@ -147,6 +147,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .toast svg{width:15px;height:15px;flex-shrink:0;}
 .sep{height:1px;background:var(--border);margin:14px 0;}
 code{font-family:'DM Mono',monospace;font-size:11.5px;}
+
+/* ── UPLOAD ── */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-glow);}
+.upload-zone svg{width:36px;height:36px;color:var(--text3);margin-bottom:10px;}
+.upload-zone p{font-size:13px;color:var(--text2);margin-bottom:4px;}
+.upload-zone span{font-size:11px;color:var(--text3);}
+.upload-select-btn{display:inline-flex;align-items:center;gap:6px;margin-top:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 16px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;}
+.upload-select-btn:hover{background:#1a6de8;}
+.upload-folder-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.upload-folder-row label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);white-space:nowrap;}
+.upload-folder-row input{flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:7px 11px;font-family:inherit;font-size:13px;color:var(--text);outline:none;}
+.upload-folder-row input:focus{border-color:var(--accent);}
+.upload-folder-row button{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;font-family:inherit;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;}
+.upload-folder-row button:hover{color:var(--text);}
+.upload-queue{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.upload-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;}
+.upload-item-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.upload-item-icon{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;}
+.upload-item-name{flex:1;font-size:13px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.upload-item-size{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;flex-shrink:0;}
+.upload-item-status{font-size:11px;font-weight:600;flex-shrink:0;}
+.upload-item-status.wait{color:var(--text3);}
+.upload-item-status.sending{color:var(--accent);}
+.upload-item-status.ok{color:var(--success);}
+.upload-item-status.err{color:var(--danger);}
+.upload-progress{height:4px;background:var(--border);border-radius:4px;overflow:hidden;}
+.upload-progress-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .3s;}
+.upload-progress-fill.ok{background:var(--success);}
+.upload-progress-fill.err{background:var(--danger);}
+.existing-files{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.existing-file{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;}
+.existing-file-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;}
+.existing-file-name{flex:1;font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.existing-file-size{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;flex-shrink:0;}
+.existing-file-del{background:none;border:none;cursor:pointer;color:var(--text3);padding:3px;border-radius:4px;display:flex;transition:color .15s;}
+.existing-file-del:hover{color:var(--danger);}
+.existing-file-del svg{width:13px;height:13px;}
 </style>
 </head>
 <body>
@@ -168,6 +206,10 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
     <button class="sidebar-link" id="sidePedidos" onclick="goTab('pedidos',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Pedidos <span id="sideCount" style="margin-left:auto;background:var(--accent-glow);color:var(--accent);font-size:11px;padding:1px 7px;border-radius:10px;display:none;">0</span>
+    </button>
+    <button class="sidebar-link" id="sideUpload" onclick="goTab('upload',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload de Docs
     </button>
     <button class="sidebar-link" id="sideConfig" onclick="goTab('config',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
@@ -379,6 +421,93 @@ code{font-family:'DM Mono',monospace;font-size:11.5px;}
       </div>
     </div>
 
+    <!-- TAB UPLOAD -->
+    <div id="tabUpload" style="display:none;">
+      <div style="max-width:720px;">
+
+        <!-- Pasta de destino -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-left">
+              <div class="card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+              <span class="card-title">Pasta de Destino</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="upload-folder-row">
+              <label>Pasta no repositório</label>
+              <input type="text" id="uploadFolder" placeholder="pedidos/1380" value="">
+              <button onclick="loadExistingFiles()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg>
+                Carregar arquivos
+              </button>
+            </div>
+            <div style="font-size:12px;color:var(--text3);">
+              Ex: <code style="color:var(--accent)">pedidos/1380</code> — os arquivos serão enviados para esta pasta no repositório GitHub configurado.
+            </div>
+          </div>
+        </div>
+
+        <!-- Arquivos existentes -->
+        <div class="card" id="existingCard" style="display:none;">
+          <div class="card-head">
+            <div class="card-head-left">
+              <div class="card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <span class="card-title">Arquivos na Pasta</span>
+            </div>
+            <span id="existingCount" style="font-size:12px;color:var(--text3);">—</span>
+          </div>
+          <div class="card-body">
+            <div id="existingLoading" style="display:none;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              Carregando…
+            </div>
+            <div id="existingEmpty" style="display:none;font-size:13px;color:var(--text3);text-align:center;padding:12px 0;">Nenhum arquivo nesta pasta ainda.</div>
+            <div class="existing-files" id="existingList"></div>
+          </div>
+        </div>
+
+        <!-- Upload -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-left">
+              <div class="card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+              <span class="card-title">Enviar Arquivos</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="btnSendAll" onclick="uploadAll()" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Enviar todos
+            </button>
+          </div>
+          <div class="card-body">
+            <!-- Zona drag & drop -->
+            <div class="upload-zone" id="uploadZone"
+              ondragover="event.preventDefault();this.classList.add('drag')"
+              ondragleave="this.classList.remove('drag')"
+              ondrop="onDrop(event)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <p>Arraste arquivos aqui</p>
+              <span>PDF, XML, XLSX, XLS, ZIP, DOCX</span>
+              <br>
+              <button class="upload-select-btn" onclick="document.getElementById('fileInput').click()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Selecionar arquivos
+              </button>
+              <input type="file" id="fileInput" multiple accept=".pdf,.xml,.xlsx,.xls,.zip,.docx" style="display:none" onchange="onFilesSelected(this.files)">
+            </div>
+
+            <!-- Fila de upload -->
+            <div class="upload-queue" id="uploadQueue"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- TAB CONFIG -->
     <div id="tabConfig" style="display:none;">
       <div style="max-width:540px;">
@@ -480,15 +609,23 @@ async function testConnection() {
 //  TABS
 // ══════════════════════════════════════════════
 function goTab(tab, btn) {
-  ['tabNovo','tabPedidos','tabConfig'].forEach(id => document.getElementById(id).style.display='none');
+  ['tabNovo','tabPedidos','tabUpload','tabConfig'].forEach(id => document.getElementById(id).style.display='none');
   document.getElementById('tab'+tab[0].toUpperCase()+tab.slice(1)).style.display='';
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  const map = { novo:'Novo Pedido', pedidos:'Pedidos Publicados', config:'Config. GitHub' };
+  const map = { novo:'Novo Pedido', pedidos:'Pedidos Publicados', upload:'Upload de Documentos', config:'Config. GitHub' };
   document.getElementById('topbarTitle').textContent = map[tab];
   document.getElementById('topbarActions').style.display = tab==='novo' ? '' : 'none';
   if (tab==='pedidos') renderSavedOrders();
   if (tab==='config')  fillConfigForm();
+  // Pré-preenche pasta de upload se vier do form de pedido
+  if (tab==='upload') {
+    const num   = gv('fNum');
+    const pasta = gv('fPasta') || 'pedidos';
+    if (num && !document.getElementById('uploadFolder').value) {
+      document.getElementById('uploadFolder').value = `${pasta}/${num}`;
+    }
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1162,6 +1299,237 @@ function showToast(msg, type='success') {
   t.style.display='flex';
   clearTimeout(window._tt);
   window._tt = setTimeout(()=>t.style.display='none', 4500);
+}
+
+// ══════════════════════════════════════════════
+//  UPLOAD DE DOCUMENTOS
+// ══════════════════════════════════════════════
+const ALLOWED_EXTS = ['pdf','xml','xlsx','xls','zip','docx'];
+const EXT_COLORS   = {
+  pdf:{c:'#c0392b',bg:'#fdecea'}, xml:{c:'#e07b00',bg:'#fff4e0'},
+  xlsx:{c:'#00875a',bg:'#e3f5ee'}, xls:{c:'#00875a',bg:'#e3f5ee'},
+  zip:{c:'#5a6b85',bg:'#f0f3f7'}, docx:{c:'#2d7ff9',bg:'#e8f0fb'}
+};
+
+let uploadQueue = []; // { file, status:'wait'|'sending'|'ok'|'err', progress:0 }
+
+function fmtSize(b) {
+  return b < 1048576 ? (b/1024).toFixed(0)+' KB' : (b/1048576).toFixed(1)+' MB';
+}
+
+function extOf(name) { return name.split('.').pop().toLowerCase(); }
+
+function extStyle(name) {
+  return EXT_COLORS[extOf(name)] || {c:'#2d7ff9',bg:'#e8f0fb'};
+}
+
+// Drag & drop
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  onFilesSelected(e.dataTransfer.files);
+}
+
+function onFilesSelected(files) {
+  const folder = document.getElementById('uploadFolder').value.trim();
+  if (!folder) { showToast('Informe a pasta de destino primeiro!','error'); return; }
+
+  Array.from(files).forEach(f => {
+    const ext = extOf(f.name);
+    if (!ALLOWED_EXTS.includes(ext)) { showToast(`Tipo não permitido: .${ext}`,'error'); return; }
+    // Evita duplicatas na fila
+    if (uploadQueue.find(q => q.file.name === f.name && q.status === 'wait')) return;
+    uploadQueue.push({ file:f, status:'wait', progress:0 });
+  });
+
+  renderUploadQueue();
+  document.getElementById('btnSendAll').style.display = uploadQueue.length ? '' : 'none';
+  // Zera o input para permitir selecionar o mesmo arquivo novamente
+  document.getElementById('fileInput').value = '';
+}
+
+function renderUploadQueue() {
+  const el = document.getElementById('uploadQueue');
+  el.innerHTML = '';
+  uploadQueue.forEach((item, idx) => {
+    const col = extStyle(item.file.name);
+    const statusLabels = { wait:'Aguardando', sending:'Enviando…', ok:'Enviado ✓', err:'Erro ✗' };
+    el.innerHTML += `
+      <div class="upload-item" id="uitem-${idx}">
+        <div class="upload-item-top">
+          <div class="upload-item-icon" style="background:${col.bg};color:${col.c};">${extOf(item.file.name).toUpperCase()}</div>
+          <span class="upload-item-name" title="${item.file.name}">${item.file.name}</span>
+          <span class="upload-item-size">${fmtSize(item.file.size)}</span>
+          <span class="upload-item-status ${item.status}">${statusLabels[item.status]}</span>
+          ${item.status==='wait'?`<button onclick="removeFromQueue(${idx})" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:2px;display:flex;" title="Remover"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:''}
+        </div>
+        <div class="upload-progress">
+          <div class="upload-progress-fill ${item.status==='ok'?'ok':item.status==='err'?'err':''}" style="width:${item.progress}%"></div>
+        </div>
+      </div>`;
+  });
+}
+
+function removeFromQueue(idx) {
+  uploadQueue.splice(idx, 1);
+  renderUploadQueue();
+  document.getElementById('btnSendAll').style.display = uploadQueue.length ? '' : 'none';
+}
+
+async function uploadAll() {
+  const cfg    = loadConfig();
+  const folder = document.getElementById('uploadFolder').value.trim();
+  if (!cfg.owner || !cfg.repo || !cfg.token) { showToast('Configure o GitHub primeiro!','error'); return; }
+  if (!folder) { showToast('Informe a pasta de destino!','error'); return; }
+
+  const pending = uploadQueue.filter(q => q.status === 'wait');
+  if (!pending.length) { showToast('Nenhum arquivo aguardando envio.','info'); return; }
+
+  document.getElementById('btnSendAll').disabled = true;
+
+  for (const item of pending) {
+    item.status   = 'sending';
+    item.progress = 10;
+    renderUploadQueue();
+
+    try {
+      const base64 = await fileToBase64(item.file);
+      const path   = `${folder}/${item.file.name}`;
+      const apiUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+      const headers= { Authorization:`token ${cfg.token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' };
+
+      // Verifica se já existe (para pegar o sha e sobrescrever)
+      let sha = null;
+      item.progress = 30; renderUploadQueue();
+      const check = await fetch(apiUrl, { headers });
+      if (check.ok) sha = (await check.json()).sha;
+
+      item.progress = 60; renderUploadQueue();
+
+      const body = {
+        message: `Upload ${item.file.name} · ${new Date().toLocaleString('pt-BR')}`,
+        content: base64,
+        branch: cfg.branch || 'main'
+      };
+      if (sha) body.sha = sha;
+
+      const put = await fetch(apiUrl, { method:'PUT', headers, body:JSON.stringify(body) });
+      if (!put.ok) { const e = await put.json(); throw new Error(e.message || put.status); }
+
+      item.status   = 'ok';
+      item.progress = 100;
+    } catch(e) {
+      item.status   = 'err';
+      item.progress = 100;
+      showToast(`Erro ao enviar ${item.file.name}: ${e.message}`, 'error');
+    }
+
+    renderUploadQueue();
+  }
+
+  document.getElementById('btnSendAll').disabled = false;
+  const ok  = uploadQueue.filter(q => q.status==='ok').length;
+  const err = uploadQueue.filter(q => q.status==='err').length;
+  showToast(`${ok} arquivo(s) enviado(s)${err?` · ${err} erro(s)`:''}`, err ? 'error' : 'success');
+
+  // Limpa os ok da fila após 3s e recarrega lista
+  setTimeout(() => {
+    uploadQueue = uploadQueue.filter(q => q.status !== 'ok');
+    renderUploadQueue();
+    document.getElementById('btnSendAll').style.display = uploadQueue.length ? '' : 'none';
+    loadExistingFiles();
+  }, 2500);
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// Carrega arquivos já existentes na pasta
+async function loadExistingFiles() {
+  const cfg    = loadConfig();
+  const folder = document.getElementById('uploadFolder').value.trim();
+  if (!cfg.owner || !cfg.repo || !cfg.token || !folder) {
+    showToast('Configure o GitHub e informe a pasta!','error');
+    return;
+  }
+
+  const card = document.getElementById('existingCard');
+  card.style.display = '';
+  document.getElementById('existingLoading').style.display = 'flex';
+  document.getElementById('existingEmpty').style.display   = 'none';
+  document.getElementById('existingList').innerHTML        = '';
+  document.getElementById('existingCount').textContent     = '—';
+
+  try {
+    const apiUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${folder}`;
+    const r = await fetch(apiUrl, {
+      headers:{ Authorization:`token ${cfg.token}`, Accept:'application/vnd.github.v3+json' }
+    });
+
+    document.getElementById('existingLoading').style.display = 'none';
+
+    if (r.status === 404) {
+      document.getElementById('existingEmpty').style.display = 'block';
+      document.getElementById('existingCount').textContent   = '0 arquivos';
+      return;
+    }
+    if (!r.ok) throw new Error(r.status);
+
+    const items = (await r.json()).filter(f => f.type==='file' && ALLOWED_EXTS.includes(extOf(f.name)));
+    document.getElementById('existingCount').textContent = `${items.length} arquivo(s)`;
+
+    if (!items.length) { document.getElementById('existingEmpty').style.display = 'block'; return; }
+
+    const list = document.getElementById('existingList');
+    items.forEach(f => {
+      const col = extStyle(f.name);
+      const d   = document.createElement('div');
+      d.className = 'existing-file';
+      d.innerHTML = `
+        <div class="existing-file-icon" style="background:${col.bg};color:${col.c};">${extOf(f.name).toUpperCase()}</div>
+        <span class="existing-file-name" title="${f.name}">${f.name}</span>
+        <span class="existing-file-size">${fmtSize(f.size)}</span>
+        <a href="${f.download_url}" target="_blank" class="btn btn-secondary btn-xs" style="padding:3px 8px;font-size:11px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <button class="existing-file-del" onclick="deleteFile('${f.path}','${f.sha}',this)" title="Deletar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>`;
+      list.appendChild(d);
+    });
+  } catch(e) {
+    document.getElementById('existingLoading').style.display = 'none';
+    showToast(`Erro ao carregar arquivos: ${e.message}`,'error');
+  }
+}
+
+async function deleteFile(path, sha, btn) {
+  const fname = path.split('/').pop();
+  if (!confirm(`Deletar "${fname}" do repositório? Esta ação não pode ser desfeita.`)) return;
+
+  const cfg = loadConfig();
+  btn.disabled = true;
+
+  try {
+    const apiUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+    const r = await fetch(apiUrl, {
+      method:'DELETE',
+      headers:{ Authorization:`token ${cfg.token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify({ message:`Remove ${fname} · ${new Date().toLocaleString('pt-BR')}`, sha, branch: cfg.branch||'main' })
+    });
+    if (!r.ok) throw new Error(r.status);
+    showToast(`"${fname}" deletado com sucesso.`, 'success');
+    btn.closest('.existing-file').remove();
+  } catch(e) {
+    showToast(`Erro ao deletar: ${e.message}`,'error');
+    btn.disabled = false;
+  }
 }
 
 // ══════════════════════════════════════════════
