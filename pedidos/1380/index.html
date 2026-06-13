@@ -47,12 +47,14 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 .steps{display:flex;align-items:center;margin:8px 0 4px;}
 .step{display:flex;flex-direction:column;align-items:center;flex:1;}
 .step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text2);z-index:1;transition:all .3s;}
+/* done = concluído; active = etapa atual (preenchido + glow) */
 .step.done .step-circle{background:var(--accent);border-color:var(--accent);color:#fff;}
-.step.active .step-circle{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px var(--accent-light);}
+.step.active .step-circle{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 5px var(--accent-light);}
 .step-label{font-size:11px;color:var(--text2);margin-top:8px;text-align:center;white-space:nowrap;}
 .step.done .step-label,.step.active .step-label{color:var(--accent);font-weight:500;}
 .step-line{flex:1;height:2px;background:var(--border);margin-bottom:20px;position:relative;overflow:hidden;}
 .step-line.done::after{content:'';position:absolute;inset:0;background:var(--accent);}
+.step-line.active::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--accent) 60%,transparent 100%);}
 .product-list{display:flex;flex-direction:column;gap:16px;}
 .product-item{display:flex;align-items:center;gap:16px;}
 .product-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);width:20px;flex-shrink:0;text-align:right;}
@@ -142,15 +144,14 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
             <div class="transport-avatar">JT</div>
             <div><div class="transport-name">JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42</div><div class="transport-vol">8 volumes &nbsp;·&nbsp; <span class="tag blue" id="tTag">—</span></div></div>
           </div>
-          <div class="transport-pct-header"><span>Progresso de entrega</span><span>100%</span></div>
-          <div class="transport-bar"><div class="transport-bar-fill" style="width:100%"></div></div>
+          <div class="transport-pct-header"><span>Progresso de entrega</span><span id="tPctLabel">0%</span></div>
+          <div class="transport-bar"><div class="transport-bar-fill" id="tBar" style="width:0%"></div></div>
           <div class="transport-stages"><span>Coletado</span><span>Em rota</span><span>Chegando</span><span>Entregue</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- CARD DOCUMENTOS — largura total abaixo do grid -->
   <div class="card" style="margin-top:24px;">
     <div class="card-header">
       <div class="card-header-icon blue">
@@ -176,14 +177,60 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 
 </div>
 <script>
-const sm={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
-const sv=5;
-for(let i=1;i<=5;i++){const e=document.getElementById("s"+i);e.className="step"+(i<=sv?" done":"");const c=e.querySelector(".step-circle");c.innerHTML=i<sv?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':i;if(i<5)document.getElementById("l"+i).className="step-line"+(i<sv?" done":"");}
-const hb=document.getElementById("hBadge");hb.className="badge-status "+sm[sv].c;hb.innerHTML='<span class="dot"></span><span>'+sm[sv].l+'</span>';
-const pr=[{"name":"Venoscópio Localizador de Veias AMA QV-600...","desc":"Em Separação","qty":"8/8","pct":100},{"name":"Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek","desc":"Disponível","qty":"10/10","pct":100}];const pl=document.getElementById("productList");
-pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
-const tg=document.getElementById("tTag"),tp=20;
-tg.textContent=tp<10?"COLETADO":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
+// ── CONFIG ──────────────────────────────────────────────
+const STATUS_MAP = {
+  1:{l:"Pedido Recebido",c:"em-preparacao"},
+  2:{l:"Em Preparação",c:"em-preparacao"},
+  3:{l:"Pronto para Envio",c:"pronto"},
+  4:{l:"Em Trânsito",c:"enviado"},
+  5:{l:"Entregue",c:"pronto"}
+};
+
+// ★ ALTERE APENAS ESTAS DUAS VARIÁVEIS PARA ATUALIZAR O PEDIDO
+const sv = 5;   // Status: 1=Recebido 2=Preparação 3=Pronto 4=Trânsito 5=Entregue
+const tp = 100; // Transporte %: 0=Aguardando ≤20=Coletado <50=Em rota <90=Em trânsito <100=Chegando 100=Entregue
+
+// ── STEPS ───────────────────────────────────────────────
+for(let i=1;i<=5;i++){
+  const e=document.getElementById("s"+i);
+  // done = etapas anteriores; active = etapa atual (preenchida + glow); sem classe = futuro
+  e.className="step"+(i<sv?" done":i===sv?" active":"");
+  const c=e.querySelector(".step-circle");
+  // Etapas concluídas E a etapa atual recebem ícone ✓
+  c.innerHTML=i<=sv
+    ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+    :i;
+  if(i<5){
+    const l=document.getElementById("l"+i);
+    l.className="step-line"+(i<sv?" done":i===sv?" active":"");
+  }
+}
+const hb=document.getElementById("hBadge");
+hb.className="badge-status "+STATUS_MAP[sv].c;
+hb.innerHTML='<span class="dot"></span><span>'+STATUS_MAP[sv].l+'</span>';
+
+// ── PRODUTOS ─────────────────────────────────────────────
+const pr=[
+  {"name":"Venoscópio Localizador de Veias AMA QV-600","desc":"Em Separação","qty":"8/8","pct":100},
+  {"name":"Sistema de Compressão Anti-trombose TVP/EP Phlebo Press DVT 760D - Mego Afek","desc":"Disponível","qty":"10/10","pct":100}
+];
+const pl=document.getElementById("productList");
+pr.forEach((p,i)=>{
+  const pct=Math.min(100,Math.max(0,p.pct));
+  const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";
+  pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';
+});
+
+// ── TRANSPORTE ───────────────────────────────────────────
+// Mesma lógica usada pelo backoffice ao gerar o HTML
+const tg=document.getElementById("tTag");
+const tBar=document.getElementById("tBar");
+const tLbl=document.getElementById("tPctLabel");
+tBar.style.width=tp+"%";
+tLbl.textContent=tp+"%";
+tg.textContent=tp<=0?"Aguardando":tp<=20?"Coletado":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Chegando":"Entregue";
+
+// ── DOCUMENTOS ───────────────────────────────────────────
 (async function loadDocs(){
   const REPO="seekmedmedical/painel-pedido",FOLDER="pedidos/1380",TOKEN="";
   try{
@@ -218,6 +265,29 @@ tg.textContent=tp<10?"COLETADO":tp<50?"Em rota":tp<90?"Em trânsito":tp<100?"Che
     document.getElementById("docEmpty").style.display="block";
   }
 })();
-function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"1380 / ISCPPO00043591",cliente:"ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.textContent="✓ Enviado!";document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
+
+// ── ENVIO OBS NF ─────────────────────────────────────────
+function sendObs(){
+  const t=document.getElementById("nfObs").value.trim();
+  if(!t)return;
+  const b=document.querySelector(".nf-send-btn");
+  b.disabled=true;
+  fetch("https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({pedido:"1380 / ISCPPO00043591",cliente:"ISCP - SOCIEDADE EDUCACIONAL LTDA / 62.596.408/0051-94",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})
+  }).then(r=>{
+    if(r.ok){
+      b.style.background="var(--success)";
+      b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Enviado!';
+      document.getElementById("nfSent").style.display="flex";
+      setTimeout(()=>{
+        b.disabled=false;b.style.background="";
+        b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';
+        document.getElementById("nfSent").style.display="none";
+        document.getElementById("nfObs").value="";
+      },3500);
+    }else throw 0;
+  }).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});
+}
 </script>
 </body></html>
