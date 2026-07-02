@@ -6,7 +6,7 @@
     "cliente": "SOCIEDADE BENEFICENTE SAO CAMILO / 60.975.737/0009-09",
     "dataPed": "25/06/2026",
     "dataEnt": "04/08/2026",
-    "status": 1,
+    "status": 2,
     "nfPre": "VERIFICAR ORDEM DE COMPRA, DADOS DE FATURAMENTO E LOCAL DE ENTREGA",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "",
@@ -19,12 +19,12 @@
     "produtos": [
       {
         "name": "Venoscópio Localizador de Veias AMA QV-600",
-        "desc": "Pedido",
+        "desc": "Eq disponível / ag suporte",
         "qty": "01/01",
-        "pct": 10
+        "pct": 80
       }
     ],
-    "publishedAt": "25/06/2026, 15:33:47"
+    "publishedAt": "02/07/2026, 12:01:25"
   },
   {
     "id": 1779722286811,
