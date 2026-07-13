@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seekmed — Pedido 0071</title>
+<title>Seekmed — Pedido 0071 / 114403</title>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0SJEFLLXH6"></script>
 <script>
   window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
@@ -95,9 +95,9 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 <div class="container">
   <div class="order-meta">
     <div>
-      <div class="order-number">Pedido #0071</div>
+      <div class="order-number">Pedido #0071 / 114403</div>
       <div class="order-sub">Cliente: <strong>SOCIEDADE BENEFICENTE SAO CAMILO / 60.975.737/0009-09</strong> &nbsp;·&nbsp; <strong>25/06/2026 · Entrega: 04/08/2026</strong></div>
-      <div class="order-updated">Última atualização: 02/07/2026, 12:01:23</div>
+      <div class="order-updated">Última atualização: 13/07/2026, 16:02:57</div>
     </div>
   </div>
   <div class="card" style="margin-bottom:24px;">
@@ -124,7 +124,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
       <div class="card">
         <div class="card-header"><div class="card-header-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="card-title">Obs. Nota Fiscal</div></div>
         <div class="card-body">
-          <div class="nf-prefixo"><strong>Dados pré-definidos:</strong><br>VERIFICAR ORDEM DE COMPRA, DADOS DE FATURAMENTO E LOCAL DE ENTREGA</div>
+          <div class="nf-prefixo"><strong>Dados pré-definidos:</strong><br>ORDEM DE COMPRA 114.403, <br>LOCAL DE ENTREGA: Rua Dr. Marcelo Cândia 742 - Santa Rita 68901-901 Macapá AP</div>
           <div class="nf-label">Observação complementar</div>
           <textarea class="nf-textarea" id="nfObs" placeholder="Digite aqui qualquer observação adicional…"></textarea>
           <button class="nf-send-btn" onclick="sendObs()">
@@ -186,14 +186,14 @@ for(let i=1;i<=5;i++){
 const hb=document.getElementById("hBadge");hb.className="badge-status "+STATUS_MAP[sv].c;hb.innerHTML='<span class="dot"></span><span>'+STATUS_MAP[sv].l+'</span>';
 
 // ── PRODUTOS ─────────────────────────────────────────────────────────────
-const pr=[{"name":"Venoscópio Localizador de Veias AMA QV-600","desc":"Eq disponível / ag suporte","qty":"01/01","pct":80}];const pl=document.getElementById("productList");
+const pr=[];const pl=document.getElementById("productList");
 pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
 
 // ── TRANSPORTE — tag já injetada no HTML pelo backoffice ─────────────────
 // (a tag e a barra são HTML estático gerado em buildHtml; nenhum JS necessário aqui)
 
 // ── ENVIO OBS NF ─────────────────────────────────────────────────────────
-function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"0071",cliente:"SOCIEDADE BENEFICENTE SAO CAMILO / 60.975.737/0009-09",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Enviado!';document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
+function sendObs(){const t=document.getElementById("nfObs").value.trim();if(!t)return;const b=document.querySelector(".nf-send-btn");b.disabled=true;fetch("https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pedido:"0071 / 114403",cliente:"SOCIEDADE BENEFICENTE SAO CAMILO / 60.975.737/0009-09",observacao:t,data_envio:new Date().toLocaleString("pt-BR")})}).then(r=>{if(r.ok){b.style.background="var(--success)";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Enviado!';document.getElementById("nfSent").style.display="flex";setTimeout(()=>{b.disabled=false;b.style.background="";b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Observação';document.getElementById("nfSent").style.display="none";document.getElementById("nfObs").value="";},3500);}else throw 0;}).catch(()=>{alert("Erro ao enviar.");b.disabled=false;});}
 
 // ── DOCUMENTOS ───────────────────────────────────────────────────────────
 (async function loadDocs(){
