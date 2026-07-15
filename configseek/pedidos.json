@@ -6,7 +6,7 @@
     "cliente": "Check Up Hospital Ltda 05.460.308/0001-33",
     "dataPed": "15/07/2026",
     "dataEnt": "30/07/2026",
-    "status": 2,
+    "status": 1,
     "nfPre": "Proximo ao Colegio Ida Nelson",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "",
@@ -24,7 +24,7 @@
         "pct": 10
       }
     ],
-    "publishedAt": "15/07/2026, 15:30:32"
+    "publishedAt": "15/07/2026, 15:55:25"
   },
   {
     "id": 1783969379683,
