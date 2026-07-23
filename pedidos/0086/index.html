@@ -97,7 +97,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
     <div>
       <div class="order-number">Pedido #0086</div>
       <div class="order-sub">Cliente: <strong>EMBRION SAO PAULO LTDA 64.373.735/0001-43</strong> &nbsp;·&nbsp; <strong>15/07/2026 · Entrega: 23/07/2026</strong></div>
-      <div class="order-updated">Última atualização: 15/07/2026, 16:00:39</div>
+      <div class="order-updated">Última atualização: 23/07/2026, 09:40:50</div>
     </div>
   </div>
   <div class="card" style="margin-bottom:24px;">
@@ -175,7 +175,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 // ── STEPS ────────────────────────────────────────────────────────────────
 // done=concluído(✓ sólido) · active=etapa atual(✓ sólido + glow) · sem classe=futuro
 const STATUS_MAP={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
-const sv=1;
+const sv=2;
 for(let i=1;i<=5;i++){
   const e=document.getElementById("s"+i);
   e.className="step"+(i<sv?" done":i===sv?" active":"");
@@ -186,7 +186,7 @@ for(let i=1;i<=5;i++){
 const hb=document.getElementById("hBadge");hb.className="badge-status "+STATUS_MAP[sv].c;hb.innerHTML='<span class="dot"></span><span>'+STATUS_MAP[sv].l+'</span>';
 
 // ── PRODUTOS ─────────────────────────────────────────────────────────────
-const pr=[{"name":"Centrífuga Analógica 12 tubos de 15ml 80-2B","desc":"","qty":"02/02","pct":10}];const pl=document.getElementById("productList");
+const pr=[{"name":"Centrífuga Analógica 12 tubos de 15ml 80-2B","desc":"","qty":"02/02","pct":60}];const pl=document.getElementById("productList");
 pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
 
 // ── TRANSPORTE — tag já injetada no HTML pelo backoffice ─────────────────
