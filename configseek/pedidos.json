@@ -63,7 +63,7 @@
     "status": 3,
     "nfPre": "Pedido de Compra (OC nº 81.283). LOT (10) 000085 SN (21) 000827\nNossa Inscrição Suframa: 200126270.\nOrientações para emissão da Nota Fiscal: CST 06, CFOP 6109, informar o Art. 2º da Lei nº 10.996/2004, PIS/COFINS com alíquota reduzida a zero e informar os Arts. 81 e 84 do Decreto nº 7.212/2010 (IPI).\nProximo ao Colegio Ida Nelson - Obs: A entrega deverá ser realizada no setor de Almoxarifado, de segunda a sexta-feira, das 08h às 17h, e aos sábados, das 08h às 12h.",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
-    "transNome": "",
+    "transNome": "AZUL CARGO EXPRESS",
     "transVol": "1",
     "transPct": "0",
     "pasta": "pedidos",
@@ -78,7 +78,7 @@
         "pct": 100
       }
     ],
-    "publishedAt": "25/07/2026, 11:30:08"
+    "publishedAt": "25/07/2026, 11:30:23"
   },
   {
     "id": 1783969379683,
