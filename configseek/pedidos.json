@@ -97,8 +97,15 @@
     "path": "pedidos/0071/index.html",
     "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/0071/",
     "docFolder": "pedidos/0071",
-    "produtos": [],
-    "publishedAt": "13/07/2026, 16:02:59"
+    "produtos": [
+      {
+        "name": "Venoscópio Localizador de Veias AMA QV-600",
+        "desc": "",
+        "qty": "01/01",
+        "pct": 90
+      }
+    ],
+    "publishedAt": "28/07/2026, 11:06:12"
   },
   {
     "id": 1779722286811,
