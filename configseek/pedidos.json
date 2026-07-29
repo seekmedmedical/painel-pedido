@@ -82,30 +82,30 @@
   },
   {
     "id": 1783969379683,
-    "num": "0071",
-    "po": "114403",
-    "cliente": "SOCIEDADE BENEFICENTE SAO CAMILO / 60.975.737/0009-09",
-    "dataPed": "25/06/2026",
-    "dataEnt": "04/08/2026",
+    "num": "0082",
+    "po": "OC 109160",
+    "cliente": "SOCIEDADE BENEFICENTE SAO CAMILO - FORTALEZA / 60.975.737/0035-09",
+    "dataPed": "15/07/2026",
+    "dataEnt": "15/08/2026",
     "status": 2,
-    "nfPre": "ORDEM DE COMPRA 114.403, \nLOCAL DE ENTREGA: Rua Dr. Marcelo Cândia 742 - Santa Rita 68901-901 Macapá AP",
+    "nfPre": "OBSERVAÇÕES",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "",
     "transVol": "1",
     "transPct": "0",
     "pasta": "pedidos",
-    "path": "pedidos/0071/index.html",
-    "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/0071/",
-    "docFolder": "pedidos/0071",
+    "path": "pedidos/0082/index.html",
+    "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/0082/",
+    "docFolder": "pedidos/0082",
     "produtos": [
       {
         "name": "Venoscópio Localizador de Veias AMA QV-600",
         "desc": "",
-        "qty": "01/01",
-        "pct": 90
+        "qty": "02/02",
+        "pct": 30
       }
     ],
-    "publishedAt": "28/07/2026, 11:06:12"
+    "publishedAt": "29/07/2026, 11:31:37"
   },
   {
     "id": 1779722286811,
