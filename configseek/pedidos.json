@@ -33,7 +33,7 @@
     "cliente": "EMBRION SAO PAULO LTDA 64.373.735/0001-43",
     "dataPed": "15/07/2026",
     "dataEnt": "23/07/2026",
-    "status": 3,
+    "status": 5,
     "nfPre": "",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "",
@@ -51,7 +51,7 @@
         "pct": 100
       }
     ],
-    "publishedAt": "25/07/2026, 11:18:53"
+    "publishedAt": "31/07/2026, 11:49:42"
   },
   {
     "id": 1784140232635,
