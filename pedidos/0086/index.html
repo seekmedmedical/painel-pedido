@@ -97,7 +97,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
     <div>
       <div class="order-number">Pedido #0086</div>
       <div class="order-sub">Cliente: <strong>EMBRION SAO PAULO LTDA 64.373.735/0001-43</strong> &nbsp;·&nbsp; <strong>15/07/2026 · Entrega: 23/07/2026</strong></div>
-      <div class="order-updated">Última atualização: 25/07/2026, 11:18:51</div>
+      <div class="order-updated">Última atualização: 31/07/2026, 11:49:41</div>
     </div>
   </div>
   <div class="card" style="margin-bottom:24px;">
@@ -175,7 +175,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 // ── STEPS ────────────────────────────────────────────────────────────────
 // done=concluído(✓ sólido) · active=etapa atual(✓ sólido + glow) · sem classe=futuro
 const STATUS_MAP={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
-const sv=3;
+const sv=5;
 for(let i=1;i<=5;i++){
   const e=document.getElementById("s"+i);
   e.className="step"+(i<sv?" done":i===sv?" active":"");
