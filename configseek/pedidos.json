@@ -82,30 +82,30 @@
   },
   {
     "id": 1783969379683,
-    "num": "0082",
+    "num": "0082/NF 000466",
     "po": "OC 109160",
     "cliente": "SOCIEDADE BENEFICENTE SAO CAMILO - FORTALEZA / 60.975.737/0035-09",
     "dataPed": "15/07/2026",
     "dataEnt": "15/08/2026",
-    "status": 2,
+    "status": 3,
     "nfPre": "OBSERVAÇÕES",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
-    "transNome": "",
-    "transVol": "1",
+    "transNome": "JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42",
+    "transVol": "2",
     "transPct": "0",
     "pasta": "pedidos",
-    "path": "pedidos/0082/index.html",
-    "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/0082/",
+    "path": "pedidos/0082/NF 000466/index.html",
+    "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/0082/NF 000466/",
     "docFolder": "pedidos/0082",
     "produtos": [
       {
         "name": "Venoscópio Localizador de Veias AMA QV-600",
-        "desc": "",
+        "desc": "Disponível",
         "qty": "02/02",
-        "pct": 74
+        "pct": 100
       }
     ],
-    "publishedAt": "29/07/2026, 11:35:00"
+    "publishedAt": "06/08/2026, 11:21:34"
   },
   {
     "id": 1779722286811,
