@@ -11,7 +11,7 @@
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42",
     "transVol": "1",
-    "transPct": "75",
+    "transPct": "100",
     "pasta": "pedidos",
     "path": "pedidos/0071/index.html",
     "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/0071/",
@@ -24,7 +24,7 @@
         "pct": 100
       }
     ],
-    "publishedAt": "06/08/2026, 12:13:40"
+    "publishedAt": "17/08/2026, 10:59:37"
   },
   {
     "id": 1784738109174,
