@@ -114,7 +114,7 @@
     "cliente": "SOCIEDADE BENEFICENTE SAO CAMILO - FORTALEZA / 60.975.737/0035-09",
     "dataPed": "15/07/2026",
     "dataEnt": "15/08/2026",
-    "status": 3,
+    "status": 5,
     "nfPre": "OBSERVAÇÕES",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "JCARGAS TRANSPORTES E LOGISTICA LTDA CNPJ: 15.549.044/0001-42",
@@ -132,7 +132,7 @@
         "pct": 100
       }
     ],
-    "publishedAt": "17/08/2026, 11:03:58"
+    "publishedAt": "17/08/2026, 11:10:25"
   },
   {
     "id": 1779722286811,
