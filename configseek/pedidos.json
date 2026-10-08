@@ -119,7 +119,7 @@
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "AZUL CARGO EXPRESS",
     "transVol": "1",
-    "transPct": "0",
+    "transPct": "100",
     "pasta": "pedidos",
     "path": "pedidos/0089/index.html",
     "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/0089/",
@@ -132,7 +132,7 @@
         "pct": 100
       }
     ],
-    "publishedAt": "25/07/2026, 11:30:23"
+    "publishedAt": "08/10/2026, 16:46:48"
   },
   {
     "id": 1783969379683,
