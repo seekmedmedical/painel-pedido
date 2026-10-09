@@ -267,6 +267,7 @@
     "pasta": "pedidos",
     "path": "pedidos/1384/index.html",
     "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/1384/",
+    "docFolder": "pedidos/1384",
     "produtos": [
       {
         "name": "Termômetro Digital Infravermelho Sem Contato - Premium",
@@ -275,6 +276,6 @@
         "pct": 100
       }
     ],
-    "publishedAt": "20/05/2026, 09:38:51"
+    "publishedAt": "08/10/2026, 21:58:33"
   }
 ]
