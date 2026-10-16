@@ -33,7 +33,7 @@
     "cliente": "RIMED SOLUTIONS LTDA / 50.199.380/0001-03",
     "dataPed": "01/10/2026",
     "dataEnt": "19/10/2026",
-    "status": 2,
+    "status": 1,
     "nfPre": "",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "Enviali",
@@ -48,10 +48,10 @@
         "name": "Desfibrilador Externo Automático AED PLUS",
         "desc": "Em preparação",
         "qty": "1",
-        "pct": 75
+        "pct": 10
       }
     ],
-    "publishedAt": "15/10/2026, 13:46:01"
+    "publishedAt": "16/10/2026, 09:49:46"
   },
   {
     "id": 1786029022058,
