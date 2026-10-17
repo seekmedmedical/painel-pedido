@@ -97,7 +97,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
     <div>
       <div class="order-number">Pedido #1456 / OC 274588</div>
       <div class="order-sub">Cliente: <strong>UNIMED DE VOLTA REDONDA COOPERATIVA DE TRABALHO MEDICO / 35.917.970/0007-26</strong> &nbsp;·&nbsp; <strong>02/09/2026 · Entrega: 20/10/2026</strong></div>
-      <div class="order-updated">Última atualização: 13/10/2026, 12:40:10</div>
+      <div class="order-updated">Última atualização: 17/10/2026, 12:05:39</div>
     </div>
   </div>
   <div class="card" style="margin-bottom:24px;">
@@ -139,10 +139,10 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
         <div class="card-body">
           <div class="transport-info">
             <div class="transport-avatar">C</div>
-            <div><div class="transport-name">CORREIOS</div><div class="transport-vol">1 volume &nbsp;·&nbsp; <span class="tag blue">Aguardando</span></div></div>
+            <div><div class="transport-name">CORREIOS</div><div class="transport-vol">1 volume &nbsp;·&nbsp; <span class="tag blue">Entregue</span></div></div>
           </div>
-          <div class="transport-pct-header"><span>Progresso de entrega</span><span>0%</span></div>
-          <div class="transport-bar"><div class="transport-bar-fill" style="width:0%"></div></div>
+          <div class="transport-pct-header"><span>Progresso de entrega</span><span>100%</span></div>
+          <div class="transport-bar"><div class="transport-bar-fill" style="width:100%"></div></div>
           <div class="transport-stages"><span>Coletado</span><span>Em rota</span><span>Chegando</span><span>Entregue</span></div>
         </div>
       </div>
@@ -175,7 +175,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 // ── STEPS ────────────────────────────────────────────────────────────────
 // done=concluído(✓ sólido) · active=etapa atual(✓ sólido + glow) · sem classe=futuro
 const STATUS_MAP={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
-const sv=3;
+const sv=5;
 for(let i=1;i<=5;i++){
   const e=document.getElementById("s"+i);
   e.className="step"+(i<sv?" done":i===sv?" active":"");
