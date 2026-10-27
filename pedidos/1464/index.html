@@ -97,7 +97,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
     <div>
       <div class="order-number">Pedido #1464 / OC 300067 – GEMSBOK</div>
       <div class="order-sub">Cliente: <strong>ESTALEIRO NAVSHIP LTDA / 07.171.021/0001-19</strong> &nbsp;·&nbsp; <strong>20/10/2026 · Entrega: 23/11/2026</strong></div>
-      <div class="order-updated">Última atualização: 23/10/2026, 13:34:41</div>
+      <div class="order-updated">Última atualização: 27/10/2026, 13:01:42</div>
     </div>
   </div>
   <div class="card" style="margin-bottom:24px;">
@@ -124,7 +124,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
       <div class="card">
         <div class="card-header"><div class="card-header-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="card-title">Obs. Nota Fiscal</div></div>
         <div class="card-body">
-          <div class="nf-prefixo"><strong>Dados pré-definidos:</strong><br>OC Navship 300067 – Cotação 2026.013371 – Embarcação GEMSBOK<br>Ref. Proposta SeekMed 1464 (desmembrada da 1370B)<br>Frete FOB – coleta a combinar com o comprador<br>Recebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30<br>Cópia da NF para navship.nfe@chouest.com</div>
+          <div class="nf-prefixo"><strong>Dados pré-definidos:</strong><br>OC Navship 300067 – Cotação 2026.013371 – Embarcação GEMSBOK<br>Ref. Proposta SeekMed 1464 (desmembrada da 1370B)<br>NF-e 000496 – Frete CIF – Arlete Transportes<br>Recebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30<br>Cópia da NF para navship.nfe@chouest.com</div>
           <div class="nf-label">Observação complementar</div>
           <textarea class="nf-textarea" id="nfObs" placeholder="Digite aqui qualquer observação adicional…"></textarea>
           <button class="nf-send-btn" onclick="sendObs()">
@@ -138,8 +138,8 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
         <div class="card-header"><div class="card-header-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="card-title">Transporte</div></div>
         <div class="card-body">
           <div class="transport-info">
-            <div class="transport-avatar">AD</div>
-            <div><div class="transport-name">A definir</div><div class="transport-vol">1 volume &nbsp;·&nbsp; <span class="tag blue">Aguardando</span></div></div>
+            <div class="transport-avatar">AT</div>
+            <div><div class="transport-name">ARLETE TRANSPORTES LTDA</div><div class="transport-vol">1 volume &nbsp;·&nbsp; <span class="tag blue">Aguardando</span></div></div>
           </div>
           <div class="transport-pct-header"><span>Progresso de entrega</span><span>0%</span></div>
           <div class="transport-bar"><div class="transport-bar-fill" style="width:0%"></div></div>
@@ -175,7 +175,7 @@ header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;heig
 // ── STEPS ────────────────────────────────────────────────────────────────
 // done=concluído(✓ sólido) · active=etapa atual(✓ sólido + glow) · sem classe=futuro
 const STATUS_MAP={1:{l:"Pedido Recebido",c:"em-preparacao"},2:{l:"Em Preparação",c:"em-preparacao"},3:{l:"Pronto para Envio",c:"pronto"},4:{l:"Em Trânsito",c:"enviado"},5:{l:"Entregue",c:"pronto"}};
-const sv=2;
+const sv=3;
 for(let i=1;i<=5;i++){
   const e=document.getElementById("s"+i);
   e.className="step"+(i<sv?" done":i===sv?" active":"");
@@ -186,7 +186,7 @@ for(let i=1;i<=5;i++){
 const hb=document.getElementById("hBadge");hb.className="badge-status "+STATUS_MAP[sv].c;hb.innerHTML='<span class="dot"></span><span>'+STATUS_MAP[sv].l+'</span>';
 
 // ── PRODUTOS ─────────────────────────────────────────────────────────────
-const pr=[{"name":"Desfibrilador Externo Automático DEA AED Plus com Feedback da RCP - Zoll","desc":"Pedido recebido – equipamento completo disponível","qty":"1","pct":0}];const pl=document.getElementById("productList");
+const pr=[{"name":"Desfibrilador Externo Automático DEA AED Plus com Feedback da RCP - Zoll","desc":"Faturado – NF-e 000496 – aguardando coleta","qty":"1","pct":0}];const pl=document.getElementById("productList");
 pr.forEach((p,i)=>{const pct=Math.min(100,Math.max(0,p.pct));const bc=pct>=80?"full":pct>=40?"":pct>=20?"mid":"low";pl.innerHTML+='<div><div class="product-item"><span class="product-num">'+String(i+1).padStart(2,"0")+'.</span><div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-desc">'+p.desc+'</div><div class="bar-wrap"><div class="bar-fill '+bc+'" style="width:'+pct+'%"></div></div></div><span class="product-qty">'+p.qty+'</span></div>'+(i<pr.length-1?'<div class="product-divider" style="margin:12px 0"></div>':'')+'</div>';});
 
 // ── TRANSPORTE — tag já injetada no HTML pelo backoffice ─────────────────
