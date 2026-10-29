@@ -6,12 +6,12 @@
     "cliente": "ESTALEIRO NAVSHIP LTDA / 07.171.021/0001-19",
     "dataPed": "20/10/2026",
     "dataEnt": "23/11/2026",
-    "status": 4,
-    "nfPre": "OC Navship 300069 – Cotação 2026.013375 – Embarcação SPRINGBOK\nRef. Proposta SeekMed 1466 (desmembrada da 1370B)\nNF-e 000498 – Frete CIF – Arlete Transportes\nColeta realizada em 27/10/2026 – rastreio em breve: https://www.arletetransportes.com.br/rastreamento\nRecebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30\nCópia da NF para navship.nfe@chouest.com",
+    "status": 5,
+    "nfPre": "OC Navship 300069 – Cotação 2026.013375 – Embarcação SPRINGBOK\nRef. Proposta SeekMed 1466 (desmembrada da 1370B)\nNF-e 000498 – Frete CIF – Arlete Transportes\nColetado em 27/10/2026 · ENTREGUE em 29/10/2026 às 12:36 – Navegantes/SC (comprovante de rastreio Arlete em Documentos)\nRecebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30\nCópia da NF para navship.nfe@chouest.com",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "ARLETE TRANSPORTES LTDA",
     "transVol": "1",
-    "transPct": "20",
+    "transPct": "100",
     "pasta": "pedidos",
     "path": "pedidos/1466/index.html",
     "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/1466/",
@@ -19,12 +19,12 @@
     "produtos": [
       {
         "name": "Desfibrilador Externo Automático DEA AED Plus com Feedback da RCP - Zoll",
-        "desc": "Faturado – NF-e 000498 – coletado pela transportadora",
+        "desc": "Entregue em 29/10/2026 – NF-e 000498",
         "qty": "1",
         "pct": 100
       }
     ],
-    "publishedAt": "27/10/2026, 11:32:34"
+    "publishedAt": "29/10/2026, 13:20:51"
   },
   {
     "id": 1792586290876,
@@ -33,12 +33,12 @@
     "cliente": "ESTALEIRO NAVSHIP LTDA / 07.171.021/0001-19",
     "dataPed": "20/10/2026",
     "dataEnt": "23/11/2026",
-    "status": 4,
-    "nfPre": "OC Navship 300068 – Cotação 2026.013373 – Embarcação ORYX\nRef. Proposta SeekMed 1465 (desmembrada da 1370B)\nNF-e 000497 – Frete CIF – Arlete Transportes\nColeta realizada em 27/10/2026 – rastreio em breve: https://www.arletetransportes.com.br/rastreamento\nRecebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30\nCópia da NF para navship.nfe@chouest.com",
+    "status": 5,
+    "nfPre": "OC Navship 300068 – Cotação 2026.013373 – Embarcação ORYX\nRef. Proposta SeekMed 1465 (desmembrada da 1370B)\nNF-e 000497 – Frete CIF – Arlete Transportes\nColetado em 27/10/2026 · ENTREGUE em 29/10/2026 às 12:36 – Navegantes/SC (comprovante de rastreio Arlete em Documentos)\nRecebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30\nCópia da NF para navship.nfe@chouest.com",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "ARLETE TRANSPORTES LTDA",
     "transVol": "1",
-    "transPct": "20",
+    "transPct": "100",
     "pasta": "pedidos",
     "path": "pedidos/1465/index.html",
     "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/1465/",
@@ -46,12 +46,12 @@
     "produtos": [
       {
         "name": "Desfibrilador Externo Automático DEA AED Plus com Feedback da RCP - Zoll",
-        "desc": "Faturado – NF-e 000497 – coletado pela transportadora",
+        "desc": "Entregue em 29/10/2026 – NF-e 000497",
         "qty": "1",
         "pct": 100
       }
     ],
-    "publishedAt": "27/10/2026, 11:32:34"
+    "publishedAt": "29/10/2026, 13:20:51"
   },
   {
     "id": 1792586290874,
@@ -60,12 +60,12 @@
     "cliente": "ESTALEIRO NAVSHIP LTDA / 07.171.021/0001-19",
     "dataPed": "20/10/2026",
     "dataEnt": "23/11/2026",
-    "status": 4,
-    "nfPre": "OC Navship 300067 – Cotação 2026.013371 – Embarcação GEMSBOK\nRef. Proposta SeekMed 1464 (desmembrada da 1370B)\nNF-e 000496 – Frete CIF – Arlete Transportes\nColeta realizada em 27/10/2026 – rastreio em breve: https://www.arletetransportes.com.br/rastreamento\nRecebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30\nCópia da NF para navship.nfe@chouest.com",
+    "status": 5,
+    "nfPre": "OC Navship 300067 – Cotação 2026.013371 – Embarcação GEMSBOK\nRef. Proposta SeekMed 1464 (desmembrada da 1370B)\nNF-e 000496 – Frete CIF – Arlete Transportes\nColetado em 27/10/2026 · ENTREGUE em 29/10/2026 às 12:36 – Navegantes/SC (comprovante de rastreio Arlete em Documentos)\nRecebimento: seg–qui 07:30–11:30 / 13:00–15:30 · sex 07:30–11:30 / 13:00–14:30\nCópia da NF para navship.nfe@chouest.com",
     "webhook": "https://hook.us2.make.com/gc6ktwdilcbq3hi59np0772u0xcq69lg",
     "transNome": "ARLETE TRANSPORTES LTDA",
     "transVol": "1",
-    "transPct": "20",
+    "transPct": "100",
     "pasta": "pedidos",
     "path": "pedidos/1464/index.html",
     "pagesUrl": "https://seekmedmedical.github.io/painel-pedido/pedidos/1464/",
@@ -73,12 +73,12 @@
     "produtos": [
       {
         "name": "Desfibrilador Externo Automático DEA AED Plus com Feedback da RCP - Zoll",
-        "desc": "Faturado – NF-e 000496 – coletado pela transportadora",
+        "desc": "Entregue em 29/10/2026 – NF-e 000496",
         "qty": "1",
         "pct": 100
       }
     ],
-    "publishedAt": "27/10/2026, 11:32:34"
+    "publishedAt": "29/10/2026, 13:20:51"
   },
   {
     "id": 1791895210458,
